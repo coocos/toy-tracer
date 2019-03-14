@@ -6,18 +6,44 @@ export class Sphere {
     this.radius = radius;
   }
   intersect(ray) {
-    let distance = 0;
-    while (distance < 10) {
-      const point = Vector.add(
-        ray.origin,
-        Vector.scale(ray.direction, distance)
-      );
-      if (point.subtract(this.position).magnitude() < this.radius) {
-        return true;
-      }
-      distance += 0.25;
+    let toSphere = Vector.subtract(this.position, ray.origin);
+    let projection = toSphere.dot(ray.direction);
+
+    //Sphere is behind the ray
+    if (projection < 0.0) {
+      return false;
     }
-    return false;
+
+    let sphereDistance = toSphere.magnitude();
+    let distance = Math.sqrt(sphereDistance ** 2 - projection ** 2);
+    if (distance > this.radius) {
+      return false;
+    }
+
+    let h = this.radius ** 2 - distance ** 2;
+    if (h < 0) {
+      return false;
+    }
+    h = Math.sqrt(h);
+
+    let firstIntersection = sphereDistance - h;
+    let secondIntersection = sphereDistance + h;
+    let firstPoint = Vector.add(
+      ray.origin,
+      Vector.scale(ray.direction, firstIntersection)
+    );
+    let secondPoint = Vector.add(
+      ray.origin,
+      Vector.scale(ray.direction, secondIntersection)
+    );
+
+    const fromPointToRay = Vector.subtract(firstPoint, ray.origin).normalize();
+
+    if (ray.direction.dot(fromPointToRay)) {
+      return true;
+    } else {
+      return true;
+    }
   }
 }
 
