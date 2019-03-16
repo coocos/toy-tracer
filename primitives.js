@@ -1,9 +1,10 @@
 import { Vector } from "vectorious";
 
 export class Sphere {
-  constructor(position, radius) {
+  constructor(position, radius, color) {
     this.position = position;
     this.radius = radius;
+    this.color = color;
   }
   normal(point) {
     return Vector.subtract(point, this.position).normalize();
