@@ -11,6 +11,8 @@ const uv = Vector.subtract(screen.bottomRight, screen.topLeft);
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 const sphere = new Sphere(new Vector([0, 0, -2]), 1);
+const sphereColor = new Vector(new Uint8Array([255, 255, 255]));
+const light = new Vector([0, 0, 2]);
 
 for (let y = 0; y < 256; y++) {
   for (let x = 0; x < 256; x++) {
@@ -21,9 +23,13 @@ for (let y = 0; y < 256; y++) {
       .normalize();
 
     const ray = new Ray(camera, direction);
-
-    if (sphere.intersect(ray)) {
-      context.fillStyle = "rgb(255, 255, 255)";
+    const point = sphere.intersect(ray);
+    if (point !== undefined) {
+      const normal = sphere.normal(point);
+      const surfaceToLight = Vector.subtract(light, point).normalize();
+      const diffuse = Math.max(0, normal.dot(surfaceToLight));
+      const color = Vector.scale(sphereColor, diffuse);
+      context.fillStyle = `rgb(${color.x}, ${color.y}, ${color.z})`;
       context.fillRect(x, y, 1, 1);
     } else {
       context.fillStyle = "rgb(75, 75, 75)";
