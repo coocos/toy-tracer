@@ -5,8 +5,8 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 
 //Scene definitions
-const white = new Vector(new Uint8Array([255, 255, 255]));
-const red = new Vector(new Uint8Array([255, 125, 125]));
+const white = new Vector([255, 255, 255]);
+const red = new Vector([255, 125, 125]);
 const whiteSphere = new Sphere(new Vector([0, 0, -2]), 1, white);
 const redSphere = new Sphere(new Vector([-1.5, 0, -3]), 1, red);
 const spheres = [whiteSphere, redSphere];
@@ -57,9 +57,19 @@ for (let y = 0; y < screenHeight; y++) {
     //Shade intersected primitive
     if (primitive !== null) {
       const normal = primitive.normal(point);
-      const surfaceToLight = Vector.subtract(light, point).normalize();
-      const lambertian = Math.max(0, normal.dot(surfaceToLight));
+
+      //Calculate Lambertian reflectance / diffuse
+      const toLight = Vector.subtract(light, point).normalize();
+      const lambertian = Math.max(0, normal.dot(toLight));
       const color = Vector.scale(primitive.color, lambertian);
+
+      //Calculate specular reflection using Blinn-Phong
+      const halfVector = Vector.add(toLight, toCamera).scale(0.5);
+      const toCamera = Vector.scale(ray.direction, -1);
+      const specular = Math.max(0, halfVector.dot(normal)) ** 16;
+      color.add(Vector.scale(white, specular));
+
+      //Shade pixel
       context.fillStyle = `rgb(${color.x}, ${color.y}, ${color.z})`;
       context.fillRect(x, y, 1, 1);
     } else {
