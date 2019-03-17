@@ -64,8 +64,8 @@ for (let y = 0; y < screenHeight; y++) {
       const color = Vector.scale(primitive.color, lambertian);
 
       //Calculate specular reflection using Blinn-Phong
-      const halfVector = Vector.add(toLight, toCamera).scale(0.5);
       const toCamera = Vector.scale(ray.direction, -1);
+      const halfVector = Vector.add(toLight, toCamera).scale(0.5);
       const specular = Math.max(0, halfVector.dot(normal)) ** 16;
       color.add(Vector.scale(white, specular));
 
