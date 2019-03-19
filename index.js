@@ -1,5 +1,6 @@
 import { Vector } from "vectorious";
-import { Ray, Sphere } from "./primitives";
+import { Sphere } from "./primitives";
+import { Ray } from "./math";
 
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
