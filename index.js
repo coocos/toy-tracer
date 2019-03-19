@@ -24,6 +24,33 @@ const screen = {
 };
 const uv = Vector.subtract(screen.bottomRight, screen.topLeft);
 
+function trace(ray, breakEarly = false) {
+  //Returns nearest intersected point and primitive for ray
+  let distance = Number.MAX_VALUE;
+  let point = null;
+  let primitive = null;
+  for (let sphere of spheres) {
+    const intersection = sphere.intersect(ray);
+
+    if (intersection !== undefined) {
+      let intersectionDistance = Vector.subtract(
+        intersection,
+        camera
+      ).magnitude();
+      if (intersectionDistance < distance) {
+        distance = intersectionDistance;
+        point = intersection;
+        primitive = sphere;
+        //Return the first intersection even if it's not the nearest
+        if (breakEarly) {
+          return [point, primitive];
+        }
+      }
+    }
+  }
+  return [point, primitive];
+}
+
 for (let y = 0; y < screenHeight; y++) {
   for (let x = 0; x < screenWidth; x++) {
     //Construct ray from camera to pixel plane
@@ -34,26 +61,7 @@ for (let y = 0; y < screenHeight; y++) {
       .normalize();
     const ray = new Ray(camera, direction);
 
-    const distance = Number.MAX_VALUE;
-    const point = null;
-    const primitive = null;
-
-    //Find the closest intersection
-    for (let sphere of spheres) {
-      const intersection = sphere.intersect(ray);
-
-      if (intersection !== undefined) {
-        let intersectionDistance = Vector.subtract(
-          intersection,
-          camera
-        ).magnitude();
-        if (intersectionDistance < distance) {
-          distance = intersectionDistance;
-          point = intersection;
-          primitive = sphere;
-        }
-      }
-    }
+    const [point, primitive] = trace(ray);
 
     //Shade intersected primitive
     if (primitive !== null) {
@@ -69,6 +77,13 @@ for (let y = 0; y < screenHeight; y++) {
       const halfVector = Vector.add(toLight, toCamera).scale(0.5);
       const specular = Math.max(0, halfVector.dot(normal)) ** 16;
       color.add(Vector.scale(white, specular));
+
+      //Check if point is shadowed
+      const shadowRay = new Ray(point, toLight);
+      const [shadowedPoint, shadowedPrimitive] = trace(shadowRay, true);
+      if (shadowedPoint !== null) {
+        color.scale(0.25);
+      }
 
       //Shade pixel
       context.fillStyle = `rgb(${color.x}, ${color.y}, ${color.z})`;
