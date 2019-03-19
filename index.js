@@ -8,10 +8,10 @@ const context = canvas.getContext("2d");
 //Scene definitions
 const white = new Vector([255, 255, 255]);
 const red = new Vector([255, 125, 125]);
-const whiteSphere = new Sphere(new Vector([0, 0, -2]), 1, white);
+const whiteSphere = new Sphere(new Vector([0, 0, -2]), 0.5, white);
 const redSphere = new Sphere(new Vector([-1.5, 0, -3]), 1, red);
 const spheres = [whiteSphere, redSphere];
-const light = new Vector([0, 0, 2]);
+const light = new Vector([3, 0, 2]);
 
 //Screen definitions
 const camera = new Vector([0, 0, 2]);
