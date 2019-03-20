@@ -7,11 +7,13 @@ const context = canvas.getContext("2d");
 
 //Scene definitions
 const white = new Vector([255, 255, 255]);
+const green = new Vector([75, 255, 175]);
 const red = new Vector([255, 125, 125]);
-const whiteSphere = new Sphere(new Vector([0, 0, -2]), 0.5, white);
-const redSphere = new Sphere(new Vector([-1.5, 0, -3]), 1, red);
-const spheres = [whiteSphere, redSphere];
-const light = new Vector([3, 0, 2]);
+const greenSphere = new Sphere(new Vector([0.75, 0.25, -2]), 0.5, green);
+const redSphere = new Sphere(new Vector([-2.5, 0, -3]), 1, red);
+const whiteSphere = new Sphere(new Vector([0, -0.75, -5]), 1.5, white);
+const spheres = [greenSphere, redSphere, whiteSphere];
+const light = new Vector([3, 2, 2]);
 
 //Screen definitions
 const camera = new Vector([0, 0, 2]);
