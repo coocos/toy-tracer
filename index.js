@@ -1,19 +1,10 @@
 import { Vector } from "vectorious";
-import { Sphere } from "./primitives";
 import { Ray } from "./math";
+import scene from "./scene";
+import constants from "./constants";
 
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
-
-//Scene definitions
-const white = new Vector([255, 255, 255]);
-const green = new Vector([75, 255, 175]);
-const red = new Vector([255, 125, 125]);
-const greenSphere = new Sphere(new Vector([0.75, 0.25, -2]), 0.5, green);
-const redSphere = new Sphere(new Vector([-2.5, 0, -3]), 1, red);
-const whiteSphere = new Sphere(new Vector([0, -0.75, -5]), 1.5, white);
-const spheres = [greenSphere, redSphere, whiteSphere];
-const light = new Vector([3, 2, 2]);
 
 //Screen definitions
 const camera = new Vector([0, 0, 2]);
@@ -30,9 +21,9 @@ function trace(ray, breakEarly = false) {
   //Returns nearest intersected point and primitive for ray
   let distance = Number.MAX_VALUE;
   let point = null;
-  let primitive = null;
-  for (let sphere of spheres) {
-    const intersection = sphere.intersect(ray);
+  let closestPrimitive = null;
+  for (let primitive of scene.primitives) {
+    const intersection = primitive.intersect(ray);
 
     if (intersection !== undefined) {
       let intersectionDistance = Vector.subtract(
@@ -42,20 +33,20 @@ function trace(ray, breakEarly = false) {
       if (intersectionDistance < distance) {
         distance = intersectionDistance;
         point = intersection;
-        primitive = sphere;
+        closestPrimitive = primitive;
         //Return the first intersection even if it's not the nearest
         if (breakEarly) {
-          return [point, primitive];
+          return [point, closestPrimitive];
         }
       }
     }
   }
-  return [point, primitive];
+  return [point, closestPrimitive];
 }
 
 function shade(point, normal, primitive, ray) {
   //Calculate Lambertian reflectance / diffuse
-  const toLight = Vector.subtract(light, point).normalize();
+  const toLight = Vector.subtract(scene.light, point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
   const color = Vector.scale(primitive.color, lambertian);
 
@@ -63,7 +54,7 @@ function shade(point, normal, primitive, ray) {
   const toCamera = Vector.scale(ray.direction, -1);
   const halfVector = Vector.add(toLight, toCamera).scale(0.5);
   const specular = Math.max(0, halfVector.dot(normal)) ** 16;
-  color.add(Vector.scale(white, specular));
+  color.add(Vector.scale(constants.white, specular));
   return color;
 }
 
@@ -99,7 +90,7 @@ for (let y = 0; y < screenHeight; y++) {
       }
 
       //Check if point is shadowed
-      const toLight = Vector.subtract(light, point).normalize();
+      const toLight = Vector.subtract(scene.light, point).normalize();
       const shadowRay = new Ray(point, toLight);
       const [shadowedPoint, shadowedPrimitive] = trace(shadowRay, true);
       if (shadowedPoint !== null) {
