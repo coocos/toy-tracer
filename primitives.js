@@ -9,6 +9,13 @@ export class Sphere {
   normal(point) {
     return Vector.subtract(point, this.position).normalize();
   }
+  serialize() {
+    return {
+      position: this.position.toArray(),
+      radius: this.radius,
+      color: this.color.toArray()
+    };
+  }
   intersect(ray) {
     let toSphere = Vector.subtract(this.position, ray.origin);
     let projection = toSphere.dot(ray.direction);
