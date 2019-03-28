@@ -9,6 +9,9 @@ export class Sphere {
   normal(point) {
     return Vector.subtract(point, this.position).normalize();
   }
+  static deserialize(position, radius, color) {
+    return new Sphere(new Vector(position), radius, new Vector(color));
+  }
   serialize() {
     return {
       position: this.position.toArray(),

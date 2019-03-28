@@ -14,8 +14,8 @@ export function deserialize(scene) {
   //Deserializes scene into a scene object
   return {
     light: new Vector(scene.light),
-    primitives: scene.primitives.map(
-      primitive => new Sphere(...Object.values(primitive))
+    primitives: scene.primitives.map(primitive =>
+      Sphere.deserialize(...Object.values(primitive))
     )
   };
 }
