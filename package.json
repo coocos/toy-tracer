@@ -4,8 +4,8 @@
   "description": "Toy ray tracer",
   "main": "index.js",
   "scripts": {
-    "watch": "parcel index.html",
-    "build": "parcel build index.html",
+    "watch": "parcel index.html worker.js",
+    "build": "parcel build index.html worker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kalle Lämsä",
