@@ -3,7 +3,7 @@ import { Sphere } from "./primitives";
 import constants from "./constants";
 
 export function serialize(scene) {
-  //Serializes scene scene into a JSON serializable object
+  // Serializes scene scene into a JSON serializable object
   return {
     light: scene.light.toArray(),
     primitives: scene.primitives.map(primitive => primitive.serialize())
@@ -11,7 +11,7 @@ export function serialize(scene) {
 }
 
 export function deserialize(scene) {
-  //Deserializes scene into a scene object
+  // Deserializes scene into a scene object
   return {
     light: new Vector(scene.light),
     primitives: scene.primitives.map(primitive =>

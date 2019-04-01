@@ -34,7 +34,7 @@ onmessage = function({ data }) {
 };
 
 function trace(ray, breakEarly = false) {
-  //Returns nearest intersected point and primitive for ray
+  // Returns nearest intersected point and primitive for ray
   let distance = Number.MAX_VALUE;
   let point = null;
   let closestPrimitive = null;
@@ -50,7 +50,7 @@ function trace(ray, breakEarly = false) {
         distance = intersectionDistance;
         point = intersection;
         closestPrimitive = primitive;
-        //Return the first intersection even if it's not the nearest
+        // Return the first intersection even if it's not the nearest
         if (breakEarly) {
           return [point, closestPrimitive];
         }
@@ -61,12 +61,12 @@ function trace(ray, breakEarly = false) {
 }
 
 function shade(point, normal, primitive, ray) {
-  //Calculate Lambertian reflectance / diffuse
+  // Calculate Lambertian reflectance / diffuse
   const toLight = Vector.subtract(scene.light, point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
   const color = Vector.scale(primitive.color, lambertian);
 
-  //Calculate specular reflection using Blinn-Phong
+  // Calculate specular reflection using Blinn-Phong
   const toCamera = Vector.scale(ray.direction, -1);
   const halfVector = Vector.add(toLight, toCamera).scale(0.5);
   const specular = Math.max(0, halfVector.dot(normal)) ** 16;
@@ -89,7 +89,7 @@ function render(x0, y0, x1, y1) {
   const screen = {};
   console.log("Creating screen rays");
 
-  //Construct ray from camera to pixel plane
+  // Construct ray from camera to pixel plane
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
       if (rays[x] == undefined) {
@@ -103,16 +103,16 @@ function render(x0, y0, x1, y1) {
   console.log("Tracing scene");
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
-      //Construct ray from camera to pixel plane
+      // Construct ray from camera to pixel plane
       const ray = rays[x][y];
       const [point, primitive] = trace(ray);
 
-      //Shade intersected primitive
+      // Shade intersected primitive
       if (primitive !== null) {
         const normal = primitive.normal(point);
         const color = shade(point, normal, primitive, ray);
 
-        //Calculate if point reflects another object in the scene
+        // Calculate if point reflects another object in the scene
         const reflectedRay = new Ray(point, ray.reflect(normal));
         const [reflectedPoint, reflectedPrimitive] = trace(reflectedRay, true);
         if (reflectedPoint !== null) {
@@ -126,7 +126,7 @@ function render(x0, y0, x1, y1) {
           color.scale(0.5).add(reflectedColor.scale(0.5));
         }
 
-        //Check if point is shadowed
+        // Check if point is shadowed
         const toLight = Vector.subtract(scene.light, point).normalize();
         const shadowRay = new Ray(point, toLight);
         const [shadowedPoint, shadowedPrimitive] = trace(shadowRay, true);

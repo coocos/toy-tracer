@@ -23,7 +23,7 @@ export class Sphere {
     let toSphere = Vector.subtract(this.position, ray.origin);
     let projection = toSphere.dot(ray.direction);
 
-    //Sphere is behind the ray
+    // Sphere is behind the ray
     if (projection < 0.0) {
       return;
     }
