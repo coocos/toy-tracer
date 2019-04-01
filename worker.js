@@ -138,6 +138,13 @@ function render(x0, y0, x1, y1) {
         screen[x][y] = "rgb(75, 75, 75)";
       }
     }
+
+    // Update render progress
+    if (y % 16 == 0) {
+      postMessage({
+        bucket: screen
+      });
+    }
   }
 
   console.log("Done rendering");
