@@ -5,6 +5,7 @@ import constants from "./constants";
 
 let scene;
 let screen;
+let resolution;
 const camera = new Vector([0, 0, 2]);
 
 onmessage = function({ data }) {
@@ -16,6 +17,10 @@ onmessage = function({ data }) {
     screen = {
       topLeft: new Vector(data.screen.topLeft),
       bottomRight: new Vector(data.screen.bottomRight)
+    };
+    resolution = {
+      width: data.resolution.width,
+      height: data.resolution.height
     };
   } else if (data.bucket) {
     console.log("Received render command");
@@ -70,13 +75,9 @@ function shade(point, normal, primitive, ray) {
 }
 
 function create_screen_ray(x, y) {
-  // FIXME: These need to be sent to the worker
-  const screenWidth = 240;
-  const screenHeight = 100;
-
   const uv = Vector.subtract(screen.bottomRight, screen.topLeft);
-  const u = uv.x * x / screenWidth;
-  const v = uv.y * y / screenHeight;
+  const u = uv.x * x / resolution.width;
+  const v = uv.y * y / resolution.height;
   const direction = Vector.add(screen.topLeft, new Vector([u, v, 0]))
     .subtract(camera)
     .normalize();

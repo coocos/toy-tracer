@@ -30,6 +30,10 @@ worker.postMessage({
   screen: {
     topLeft: screen.topLeft.toArray(),
     bottomRight: screen.bottomRight.toArray()
+  },
+  resolution: {
+    width: canvas.width,
+    height: canvas.height
   }
 });
 worker.postMessage({ scene: serialize(scene) });
