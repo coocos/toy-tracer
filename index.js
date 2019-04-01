@@ -25,6 +25,7 @@ worker.onmessage = ({ data }) => {
       context.fillRect(x, y, 1, 1);
     }
   }
+  console.log(`Rendering took ${new Date() - renderStartTime} ms`);
 };
 worker.postMessage({
   screen: {
@@ -37,6 +38,7 @@ worker.postMessage({
   }
 });
 worker.postMessage({ scene: serialize(scene) });
+const renderStartTime = new Date();
 worker.postMessage({
   bucket: {
     x: [0, screenWidth],
