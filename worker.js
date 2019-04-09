@@ -86,7 +86,7 @@ function create_screen_ray(x, y) {
 
 function render(x0, y0, x1, y1) {
   const rays = {};
-  const screen = {};
+  let bucket = {};
   console.log("Creating screen rays");
 
   // Construct ray from camera to pixel plane
@@ -94,7 +94,6 @@ function render(x0, y0, x1, y1) {
     for (let x = x0; x < x1; x++) {
       if (rays[x] == undefined) {
         rays[x] = {};
-        screen[x] = {};
       }
       rays[x][y] = create_screen_ray(x, y);
     }
@@ -103,6 +102,8 @@ function render(x0, y0, x1, y1) {
   console.log("Tracing scene");
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
+      let finalColor = "rgb(75, 75, 75)";
+
       // Construct ray from camera to pixel plane
       const ray = rays[x][y];
       const [point, primitive] = trace(ray);
@@ -133,22 +134,27 @@ function render(x0, y0, x1, y1) {
         if (shadowedPoint !== null) {
           color.scale(0.25);
         }
-        screen[x][y] = `rgb(${color.x}, ${color.y}, ${color.z})`;
-      } else {
-        screen[x][y] = "rgb(75, 75, 75)";
+        finalColor = `rgb(${color.x}, ${color.y}, ${color.z})`;
       }
+
+      if (bucket[x] === undefined) {
+        bucket[x] = {};
+      }
+      bucket[x][y] = finalColor;
     }
 
     // Update render progress
     if (y % 16 == 0) {
       postMessage({
-        bucket: screen
+        bucket
       });
+      // Clear bucket between updates
+      bucket = {};
     }
   }
 
   console.log("Done rendering");
   postMessage({
-    bucket: screen
+    bucket
   });
 }
