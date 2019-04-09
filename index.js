@@ -22,7 +22,7 @@ const screen = {
  *
  * @param {Number} workerCount - amount of workers to spawn
  */
-function spawnWorkers(workerCount = 1) {
+function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
   const verticalSlice = Math.floor(screenHeight / workerCount);
   for (let i = 0; i < workerCount; i++) {
     // Post render tasks to WebWorkers
@@ -57,4 +57,4 @@ function spawnWorkers(workerCount = 1) {
   }
 }
 
-spawnWorkers(2);
+spawnWorkers();
