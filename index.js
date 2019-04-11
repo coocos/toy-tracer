@@ -25,8 +25,9 @@ const screen = {
 function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
   const verticalSlice = Math.floor(screenHeight / workerCount);
   for (let i = 0; i < workerCount; i++) {
-    // Post render tasks to WebWorkers
     const worker = new Worker("worker.js");
+
+    // Render updates from worker to canvas
     worker.onmessage = ({ data }) => {
       for (const [x, ys] of Object.entries(data.bucket)) {
         for (const [y, color] of Object.entries(ys)) {
@@ -36,6 +37,8 @@ function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
       }
       console.log(`Rendering took ${new Date() - renderStartTime} ms`);
     };
+
+    // Post scene definition to worker
     worker.postMessage({
       screen: {
         topLeft: screen.topLeft.toArray(),

@@ -10,10 +10,8 @@ const camera = new Vector([0, 0, 2]);
 
 onmessage = function({ data }) {
   if (data.scene) {
-    console.log("Received scene");
     scene = deserialize(data.scene);
   } else if (data.screen) {
-    console.log("Received screen");
     screen = {
       topLeft: new Vector(data.screen.topLeft),
       bottomRight: new Vector(data.screen.bottomRight)
@@ -23,7 +21,6 @@ onmessage = function({ data }) {
       height: data.resolution.height
     };
   } else if (data.bucket) {
-    console.log("Received render command");
     render(
       data.bucket.x[0],
       data.bucket.y[0],
@@ -86,7 +83,7 @@ function shade(point, normal, primitive, ray) {
   return color;
 }
 
-function create_screen_ray(x, y) {
+function createScreenRay(x, y) {
   const uv = Vector.subtract(screen.bottomRight, screen.topLeft);
   const u = uv.x * x / resolution.width;
   const v = uv.y * y / resolution.height;
@@ -96,22 +93,24 @@ function create_screen_ray(x, y) {
   return new Ray(camera, direction);
 }
 
-function render(x0, y0, x1, y1) {
+function createScreenRays(x0, y0, x1, y1) {
   const rays = {};
-  let bucket = {};
-  console.log("Creating screen rays");
-
   // Construct ray from camera to pixel plane
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
       if (rays[x] == undefined) {
         rays[x] = {};
       }
-      rays[x][y] = create_screen_ray(x, y);
+      rays[x][y] = createScreenRay(x, y);
     }
   }
+  return rays;
+}
 
-  console.log("Tracing scene");
+function render(x0, y0, x1, y1) {
+  let bucket = {};
+  const rays = createScreenRays(x0, y0, x1, y1);
+
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
       let finalColor = "rgb(75, 75, 75)";
@@ -163,7 +162,6 @@ function render(x0, y0, x1, y1) {
     }
   }
 
-  console.log("Done rendering");
   postMessage({
     bucket
   });
