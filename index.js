@@ -17,7 +17,7 @@ const screen = {
 };
 
 /**
- * Spawns multiple WebWorkers for rendering the scene.  Each worker will
+ * Spawns multiple WebWorkers for rendering the scene. Each worker will
  * compute pixel colors for a single vertical slice of the canvas.
  *
  * @param {Number} workerCount - amount of workers to spawn

@@ -33,7 +33,7 @@ onmessage = function({ data }) {
   }
 };
 
-function trace(ray, breakEarly = false) {
+function trace(ray) {
   // Returns nearest intersected point and primitive for ray
   let distance = Number.MAX_VALUE;
   let point = null;
@@ -50,14 +50,26 @@ function trace(ray, breakEarly = false) {
         distance = intersectionDistance;
         point = intersection;
         closestPrimitive = primitive;
-        // Return the first intersection even if it's not the nearest
-        if (breakEarly) {
-          return [point, closestPrimitive];
-        }
       }
     }
   }
   return [point, closestPrimitive];
+}
+
+/**
+ * Returns whether point is shadowed or not
+ *
+ * @param {Vector} point
+ * @return {boolean} True if shadowed, false if not
+ */
+function isShadowed(point, scene) {
+  const ray = new Ray(point, Vector.subtract(scene.light, point).normalize());
+  for (let primitive of scene.primitives) {
+    if (primitive.intersect(ray) !== undefined) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function shade(point, normal, primitive, ray) {
@@ -127,13 +139,11 @@ function render(x0, y0, x1, y1) {
           color.scale(0.5).add(reflectedColor.scale(0.5));
         }
 
-        // Check if point is shadowed
-        const toLight = Vector.subtract(scene.light, point).normalize();
-        const shadowRay = new Ray(point, toLight);
-        const [shadowedPoint, shadowedPrimitive] = trace(shadowRay, true);
-        if (shadowedPoint !== null) {
+        // Make shadowed points darker
+        if (isShadowed(point, scene)) {
           color.scale(0.25);
         }
+
         finalColor = `rgb(${color.x}, ${color.y}, ${color.z})`;
       }
 
