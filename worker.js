@@ -131,9 +131,8 @@ function intersect(ray) {
  * @return {Vector} Color of the intersected point
  */
 function trace(ray, depth = 2) {
-  let finalColor = new Vector([0, 0, 0]);
   if (depth == 0) {
-    return finalColor;
+    return;
   }
 
   const [point, primitive] = intersect(ray);
@@ -154,9 +153,8 @@ function trace(ray, depth = 2) {
     if (isShadowed(point, scene)) {
       color.scale(0.25);
     }
-    finalColor = color;
+    return color;
   }
-  return finalColor;
 }
 
 /**
@@ -170,11 +168,12 @@ function trace(ray, depth = 2) {
 function render(x0, y0, x1, y1) {
   let bucket = {};
   const rays = createScreenRays(x0, y0, x1, y1);
+  const backgroundColor = new Vector([175, 175, 175]);
 
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
       const ray = rays[x][y];
-      const color = trace(ray);
+      const color = trace(ray) || backgroundColor;
       if (bucket[x] === undefined) {
         bucket[x] = {};
       }
