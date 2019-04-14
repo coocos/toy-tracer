@@ -83,12 +83,13 @@ function shade(point, normal, primitive, ray) {
   // Calculate Lambertian reflectance / diffuse
   const toLight = Vector.subtract(scene.light, point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
-  const color = Vector.scale(primitive.color, lambertian);
+  const color = Vector.scale(primitive.material.color, lambertian);
 
   // Calculate specular reflection using Blinn-Phong
   const toCamera = Vector.scale(ray.direction, -1);
   const halfVector = Vector.add(toLight, toCamera).scale(0.5);
-  const specular = Math.max(0, halfVector.dot(normal)) ** 16;
+  const specular =
+    Math.max(0, halfVector.dot(normal)) ** primitive.material.glossiness;
   color.add(Vector.scale(constants.white, specular));
   return color;
 }
@@ -143,10 +144,12 @@ function trace(ray, depth = 2) {
     const color = shade(point, normal, primitive, ray);
 
     // Calculate if point reflects another object in the scene
-    const reflectedRay = new Ray(point, ray.reflect(normal));
-    const reflectedColor = trace(reflectedRay, depth - 1);
-    if (reflectedColor !== undefined) {
-      color.scale(0.5).add(reflectedColor.scale(0.5));
+    if (primitive.material.reflectivity > 0) {
+      const reflectedRay = new Ray(point, ray.reflect(normal));
+      const reflectedColor = trace(reflectedRay, depth - 1);
+      if (reflectedColor !== undefined) {
+        color.scale(0.5).add(reflectedColor.scale(0.5));
+      }
     }
 
     // Make shadowed points darker

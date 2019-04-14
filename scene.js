@@ -21,10 +21,24 @@ export function deserialize(scene) {
 }
 
 export default {
-  light: new Vector([3, 2, 2]),
+  light: new Vector([0, 0, 2]),
   primitives: [
-    new Sphere(new Vector([0.75, 0.25, -2]), 0.5, constants.green),
-    new Sphere(new Vector([-2.5, 0, -3]), 1, constants.red),
-    new Sphere(new Vector([0, -0.75, -5]), 1.5, constants.white)
+    new Sphere(new Vector([1.25, 0, -2]), 0.5, {
+      color: constants.green,
+      reflectivity: 1.0
+    }),
+    new Sphere(new Vector([0, 0, -2]), 0.5, { color: constants.red }),
+    new Sphere(new Vector([-1.25, 0, -2]), 0.5, {
+      color: constants.white,
+      reflectivity: 1.0
+    }),
+    new Sphere(new Vector([0, -1.25, -2]), 0.5, {
+      color: constants.red,
+      reflectivity: 1.0
+    }),
+    new Sphere(new Vector([0, 1.25, -2]), 0.5, {
+      color: constants.white,
+      reflectivity: 1.0
+    })
   ]
 };

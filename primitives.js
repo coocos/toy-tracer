@@ -1,22 +1,38 @@
 import { Vector } from "vectorious";
 
 export class Sphere {
-  constructor(position, radius, color) {
+  constructor(
+    position,
+    radius,
+    { color, glossiness = 1024.0, reflectivity = 0.0 }
+  ) {
     this.position = position;
     this.radius = radius;
-    this.color = color;
+    this.material = {
+      color,
+      glossiness,
+      reflectivity
+    };
   }
   normal(point) {
     return Vector.subtract(point, this.position).normalize();
   }
-  static deserialize(position, radius, color) {
-    return new Sphere(new Vector(position), radius, new Vector(color));
+  static deserialize(position, radius, material) {
+    return new Sphere(new Vector(position), radius, {
+      color: new Vector(material.color),
+      glossiness: material.glossiness,
+      reflectivity: material.reflectivity
+    });
   }
   serialize() {
     return {
       position: this.position.toArray(),
       radius: this.radius,
-      color: this.color.toArray()
+      material: {
+        color: this.material.color.toArray(),
+        glossiness: this.material.glossiness,
+        reflectivity: this.material.reflectivity
+      }
     };
   }
   intersect(ray) {
