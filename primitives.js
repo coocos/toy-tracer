@@ -15,7 +15,7 @@ export class Sphere {
     };
   }
   normal(point) {
-    return Vector.subtract(point, this.position).normalize();
+    return point.subtract(this.position).normalize();
   }
   static deserialize(position, radius, material) {
     return new Sphere(new Vector(position), radius, {
@@ -36,7 +36,7 @@ export class Sphere {
     };
   }
   intersect(ray) {
-    let toSphere = Vector.subtract(this.position, ray.origin);
+    let toSphere = this.position.subtract(ray.origin);
     let projection = toSphere.dot(ray.direction);
 
     // Sphere is behind the ray
@@ -58,19 +58,13 @@ export class Sphere {
 
     let firstIntersection = sphereDistance - h;
     let secondIntersection = sphereDistance + h;
-    let firstPoint = Vector.add(
-      ray.origin,
-      Vector.scale(ray.direction, firstIntersection)
-    );
-    const fromPointToRay = Vector.subtract(firstPoint, ray.origin).normalize();
+    let firstPoint = ray.origin.add(ray.direction.scale(firstIntersection));
+    const fromPointToRay = firstPoint.subtract(ray.origin).normalize();
 
     if (ray.direction.dot(fromPointToRay)) {
       return firstPoint;
     } else {
-      let secondPoint = Vector.add(
-        ray.origin,
-        Vector.scale(ray.direction, secondIntersection)
-      );
+      let secondPoint = ray.origin.add(ray.direction.scale(secondIntersection));
       return secondPoint;
     }
   }

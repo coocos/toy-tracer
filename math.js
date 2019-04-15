@@ -1,34 +1,16 @@
 export class Vector {
-  constructor(arr) {
-    this.x = arr[0];
-    this.y = arr[1];
-    this.z = arr[2];
-  }
-
-  static subtract(vec1, vec2) {
-    return new Vector([vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z]);
-  }
-
-  static scale(vec, scalar) {
-    return new Vector([vec.x * scalar, vec.y * scalar, vec.z * scalar]);
-  }
-
-  static add(vec1, vec2) {
-    return new Vector([vec1.x + vec2.x, vec1.y + vec2.y, vec1.z + vec2.z]);
+  constructor([x, y, z]) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
 
   subtract(vec) {
-    this.x = this.x - vec.x;
-    this.y = this.y - vec.y;
-    this.z = this.z - vec.z;
-    return this;
+    return new Vector([this.x - vec.x, this.y - vec.y, this.z - vec.z]);
   }
 
   add(vec) {
-    this.x = this.x + vec.x;
-    this.y = this.y + vec.y;
-    this.z = this.z + vec.z;
-    return this;
+    return new Vector([this.x + vec.x, this.y + vec.y, this.z + vec.z]);
   }
 
   toArray() {
@@ -40,10 +22,7 @@ export class Vector {
   }
 
   scale(scalar) {
-    this.x *= scalar;
-    this.y *= scalar;
-    this.z *= scalar;
-    return this;
+    return new Vector([this.x * scalar, this.y * scalar, this.z * scalar]);
   }
 
   normalize() {
@@ -73,7 +52,7 @@ export class Ray {
    */
   reflect(normal) {
     // To understand how this works see for example: https://www.3dkingdoms.com/weekly/weekly.php?a=2
-    const projection = Vector.scale(normal, this.direction.dot(normal) * -2);
+    const projection = normal.scale(this.direction.dot(normal) * -2);
     return projection.add(this.direction);
   }
 }
