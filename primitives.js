@@ -1,4 +1,4 @@
-import { Vector } from "vectorious";
+import { Vector } from "./math";
 
 export class Sphere {
   constructor(

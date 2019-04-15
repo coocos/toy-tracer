@@ -1,4 +1,4 @@
-import { Vector } from "vectorious";
+import { Vector } from "./math";
 import { Sphere } from "./primitives";
 import constants from "./constants";
 

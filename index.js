@@ -1,5 +1,4 @@
-import { Vector } from "vectorious";
-import { Ray } from "./math";
+import { Vector, Ray } from "./math";
 import scene, { serialize, deserialize } from "./scene";
 import constants from "./constants";
 

@@ -1,6 +1,5 @@
-import { Vector } from "vectorious";
 import { deserialize } from "./scene";
-import { Ray } from "./math";
+import { Vector, Ray } from "./math";
 import constants from "./constants";
 
 let scene;

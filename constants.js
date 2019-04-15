@@ -1,4 +1,4 @@
-import { Vector } from "vectorious";
+import { Vector } from "./math";
 
 export default {
   white: new Vector([255, 255, 255]),
