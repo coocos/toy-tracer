@@ -18,8 +18,8 @@ export class Sphere {
     return point.subtract(this.position).normalize();
   }
   static deserialize(position, radius, material) {
-    return new Sphere(new Vector(position), radius, {
-      color: new Vector(material.color),
+    return new Sphere(new Vector(...position), radius, {
+      color: new Vector(...material.color),
       glossiness: material.glossiness,
       reflectivity: material.reflectivity
     });

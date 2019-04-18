@@ -5,15 +5,16 @@ import constants from "./constants";
 let scene;
 let screen;
 let resolution;
-const camera = new Vector([0, 0, 8]);
+const camera = new Vector(0, 0, 8);
 
 onmessage = function({ data }) {
   if (data.scene) {
     scene = { ...scene, ...deserialize(data.scene) };
+    console.log(scene);
   } else if (data.screen) {
     screen = {
-      topLeft: new Vector(data.screen.topLeft),
-      bottomRight: new Vector(data.screen.bottomRight)
+      topLeft: new Vector(...data.screen.topLeft),
+      bottomRight: new Vector(...data.screen.bottomRight)
     };
     resolution = {
       width: data.resolution.width,
@@ -34,7 +35,7 @@ function createScreenRay(x, y) {
   const u = uv.x * x / resolution.width;
   const v = uv.y * y / resolution.height;
   const direction = screen.topLeft
-    .add(new Vector([u, v, 0]))
+    .add(new Vector(u, v, 0))
     .subtract(camera)
     .normalize();
   return new Ray(camera, direction);
@@ -167,7 +168,7 @@ function trace(ray, depth = 4) {
 function render(x0, y0, x1, y1) {
   let bucket = {};
   const rays = createScreenRays(x0, y0, x1, y1);
-  const backgroundColor = new Vector([175, 175, 175]);
+  const backgroundColor = new Vector(175, 175, 175);
 
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {

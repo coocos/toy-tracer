@@ -1,16 +1,16 @@
 export class Vector {
-  constructor([x, y, z]) {
+  constructor(x, y, z) {
     this.x = x;
     this.y = y;
     this.z = z;
   }
 
   subtract(vec) {
-    return new Vector([this.x - vec.x, this.y - vec.y, this.z - vec.z]);
+    return new Vector(this.x - vec.x, this.y - vec.y, this.z - vec.z);
   }
 
   add(vec) {
-    return new Vector([this.x + vec.x, this.y + vec.y, this.z + vec.z]);
+    return new Vector(this.x + vec.x, this.y + vec.y, this.z + vec.z);
   }
 
   toArray() {
@@ -22,16 +22,16 @@ export class Vector {
   }
 
   scale(scalar) {
-    return new Vector([this.x * scalar, this.y * scalar, this.z * scalar]);
+    return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
   }
 
   normalize() {
     const magnitude = Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
-    return new Vector([
+    return new Vector(
       this.x / magnitude,
       this.y / magnitude,
       this.z / magnitude
-    ]);
+    );
   }
 
   dot(other) {
