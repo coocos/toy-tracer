@@ -142,7 +142,10 @@ function trace(ray, depth = 4) {
 
     // Calculate if point reflects another object in the scene
     if (primitive.material.reflectivity > 0) {
-      const reflectedRay = new Ray(point, ray.reflect(normal));
+      const reflectedRay = new Ray(
+        point.add(normal.scale(constants.epsilon)),
+        ray.reflect(normal)
+      );
       const reflectedColor = trace(reflectedRay, depth - 1);
       if (reflectedColor !== undefined) {
         color = color.scale(0.5).add(reflectedColor.scale(0.5));
