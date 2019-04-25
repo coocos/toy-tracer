@@ -1,11 +1,8 @@
 import { Vector } from "./math";
+import constants from "./constants";
 
 export class Sphere {
-  constructor(
-    position,
-    radius,
-    { color, glossiness = 1024.0, reflectivity = 0.0 }
-  ) {
+  constructor(position, radius, { color, glossiness = 0, reflectivity = 0 }) {
     this.position = position;
     this.radius = radius;
     this.material = {
@@ -26,6 +23,7 @@ export class Sphere {
   }
   serialize() {
     return {
+      type: "Sphere",
       position: this.position.toArray(),
       radius: this.radius,
       material: {
@@ -66,6 +64,51 @@ export class Sphere {
     } else {
       let secondPoint = ray.origin.add(ray.direction.scale(secondIntersection));
       return secondPoint;
+    }
+  }
+}
+
+export class Plane {
+  constructor(point, normal, material) {
+    this.point = point;
+    this.surfaceNormal = normal;
+    this.material = material;
+  }
+  normal(point) {
+    return this.surfaceNormal;
+  }
+  static deserialize(point, normal, material) {
+    return new Plane(new Vector(...point), new Vector(...normal), {
+      color: new Vector(...material.color),
+      glossiness: material.glossiness,
+      reflectivity: material.reflectivity
+    });
+  }
+  serialize() {
+    return {
+      type: "Plane",
+      point: this.point.toArray(),
+      normal: this.surfaceNormal.toArray(),
+      material: {
+        color: this.material.color.toArray(),
+        glossiness: this.material.glossiness,
+        reflectivity: this.material.reflectivity
+      }
+    };
+  }
+  intersect(ray) {
+    // See https://samsymons.com/blog/math-notes-ray-plane-intersection/
+    // for an explanation of how to derive the ray-plane intersection point
+    const denominator = ray.direction.dot(this.surfaceNormal);
+    if (Math.abs(denominator) < constants.epsilon) {
+      return;
+    }
+    const numerator = this.point.subtract(ray.origin).dot(this.surfaceNormal);
+    const t = numerator / denominator;
+
+    // If t is negative then the plane is behind the ray
+    if (t > 0) {
+      return ray.origin.add(ray.direction.scale(t));
     }
   }
 }

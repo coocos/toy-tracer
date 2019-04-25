@@ -1,5 +1,5 @@
 import { Vector } from "./math";
-import { Sphere } from "./primitives";
+import { Sphere, Plane } from "./primitives";
 import constants from "./constants";
 
 export function serialize(scene) {
@@ -12,11 +12,17 @@ export function serialize(scene) {
 
 export function deserialize(scene) {
   // Deserializes scene into a scene object
+  const typeToConstructor = {
+    Sphere,
+    Plane
+  };
   return {
     light: new Vector(...scene.light),
-    primitives: scene.primitives.map(primitive =>
-      Sphere.deserialize(...Object.values(primitive))
-    )
+    primitives: scene.primitives.map(({ type, ...primitive }) => {
+      return new typeToConstructor[type].deserialize(
+        ...Object.values(primitive)
+      );
+    })
   };
 }
 
