@@ -61,11 +61,27 @@ function createScreenRays(x0, y0, x1, y1) {
  * @param {Vector} point
  * @return {boolean} True if shadowed, false if not
  */
-function isShadowed(point, scene) {
-  const ray = new Ray(point, scene.light.subtract(point).normalize());
-  for (let primitive of scene.primitives) {
-    if (primitive.intersect(ray) !== undefined) {
-      return true;
+function isShadowed(point, normal, primitive, scene) {
+  const fromPointToLight = scene.light.subtract(point);
+  const ray = new Ray(
+    point.add(normal.scale(constants.epsilon)),
+    fromPointToLight.normalize()
+  );
+
+  for (let other of scene.primitives) {
+    if (other === primitive) {
+      continue;
+    }
+
+    const intersection = other.intersect(ray);
+    if (intersection !== undefined) {
+      const distanceToIntersection = point.subtract(intersection).magnitude();
+
+      // If the intersection distance is further away than the
+      // distance to the light then there is no shadowing
+      if (distanceToIntersection < fromPointToLight.magnitude()) {
+        return true;
+      }
     }
   }
   return false;
@@ -153,7 +169,7 @@ function trace(ray, depth = 4) {
     }
 
     // Make shadowed points darker
-    if (isShadowed(point, scene)) {
+    if (isShadowed(point, normal, primitive, scene)) {
       color = color.scale(0.25);
     }
     return color;

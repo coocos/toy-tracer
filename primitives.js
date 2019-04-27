@@ -104,11 +104,11 @@ export class Plane {
       return;
     }
     const numerator = this.point.subtract(ray.origin).dot(this.surfaceNormal);
-    const t = numerator / denominator;
+    const distance = numerator / denominator;
 
-    // If t is negative then the plane is behind the ray
-    if (t > 0) {
-      return ray.origin.add(ray.direction.scale(t));
+    // If distance is negative then the plane is behind the ray
+    if (distance >= 0) {
+      return ray.origin.add(ray.direction.scale(distance));
     }
   }
 }
