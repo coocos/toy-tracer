@@ -103,11 +103,15 @@ function shade(point, normal, primitive, ray) {
   const color = primitive.material.color.scale(lambertian);
 
   // Calculate specular reflection using Blinn-Phong
-  const toCamera = ray.direction.scale(-1);
-  const halfVector = toLight.add(toCamera).scale(0.5);
-  const specular =
-    Math.max(0, halfVector.dot(normal)) ** primitive.material.glossiness;
-  return color.add(constants.white.scale(specular));
+  if (primitive.material.glossiness > 0) {
+    const toCamera = ray.direction.scale(-1);
+    const halfVector = toLight.add(toCamera).scale(0.5);
+    const specular =
+      Math.max(0, halfVector.dot(normal)) ** primitive.material.glossiness;
+    return color.add(constants.white.scale(specular));
+  }
+
+  return color;
 }
 
 /**
