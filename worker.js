@@ -168,7 +168,9 @@ function trace(ray, depth = 4) {
       );
       const reflectedColor = trace(reflectedRay, depth - 1);
       if (reflectedColor !== undefined) {
-        color = color.scale(0.5).add(reflectedColor.scale(0.5));
+        color = color
+          .scale(1 - primitive.material.reflectivity)
+          .add(reflectedColor.scale(primitive.material.reflectivity));
       }
     }
 
