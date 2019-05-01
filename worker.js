@@ -129,7 +129,7 @@ function intersect(ray) {
     const intersection = primitive.intersect(ray);
 
     if (intersection !== undefined) {
-      let intersectionDistance = intersection.subtract(camera).magnitude();
+      let intersectionDistance = intersection.subtract(ray.origin).magnitude();
       if (intersectionDistance < distance) {
         distance = intersectionDistance;
         point = intersection;
