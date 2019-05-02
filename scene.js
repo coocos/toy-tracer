@@ -27,24 +27,36 @@ export function deserialize(scene) {
 }
 
 export default {
-  light: new Vector(0, 0, 2),
+  light: new Vector(0, 0, 0),
   primitives: [
-    new Sphere(new Vector(1.25, 0, -2), 0.5, {
-      color: constants.green,
-      reflectivity: 1.0
+    new Plane(new Vector(1.5, 0, 0), new Vector(-1, 0, 0), {
+      color: constants.red
     }),
-    new Sphere(new Vector(0, 0, -2), 0.5, { color: constants.red }),
-    new Sphere(new Vector(-1.25, 0, -2), 0.5, {
+    new Plane(new Vector(0, 0, -6), new Vector(0, 0, 1), {
+      color: constants.white
+    }),
+    new Plane(new Vector(0, 1.5, 0), new Vector(0, -1, 0), {
+      color: constants.white
+    }),
+    new Plane(new Vector(0, -1.5, 0), new Vector(0, 1, 0), {
+      color: constants.white
+    }),
+    new Plane(new Vector(-1.5, 0, 0), new Vector(1, 0, 0), {
+      color: constants.blue
+    }),
+    new Sphere(new Vector(0, -0.5, -3), 1, {
       color: constants.white,
+      glossiness: 16,
       reflectivity: 1.0
     }),
-    new Sphere(new Vector(0, -1.25, -2), 0.5, {
+    new Sphere(new Vector(-1, -1, -2), 0.25, {
       color: constants.red,
-      reflectivity: 1.0
+      glossiness: 19,
+      reflectivity: 0.9
     }),
-    new Sphere(new Vector(0, 1.25, -2), 0.5, {
-      color: constants.white,
-      reflectivity: 1.0
+    new Sphere(new Vector(1, -1, -1.5), 0.25, {
+      color: constants.blue,
+      reflectivity: 0.9
     })
   ]
 };

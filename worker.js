@@ -5,7 +5,7 @@ import constants from "./constants";
 let scene;
 let screen;
 let resolution;
-const camera = new Vector(0, 0, 8);
+const camera = new Vector(0, 0, 2.5);
 
 onmessage = function({ data }) {
   if (data.scene) {

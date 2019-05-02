@@ -6,7 +6,6 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 
 // Screen definition
-const camera = new Vector(0, 0, 2);
 const screenWidth = canvas.width;
 const screenHeight = canvas.height;
 const aspectRatio = screenWidth / screenHeight;
