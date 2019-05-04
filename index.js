@@ -1,6 +1,10 @@
 import { Vector, Ray } from "./math";
-import scene, { serialize, deserialize } from "./scene";
+import { serialize, deserialize } from "./scene";
 import constants from "./constants";
+
+// babel-polyfill is unfortunately needed for parcel
+// to play nice with async / await
+import "babel-polyfill";
 
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
@@ -20,7 +24,9 @@ const screen = {
  *
  * @param {Number} workerCount - amount of workers to spawn
  */
-function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
+async function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
+  const scene = await (await fetch("cornell.json")).json();
+
   const verticalSlice = Math.floor(screenHeight / workerCount);
   for (let i = 0; i < workerCount; i++) {
     const worker = new Worker("worker.js");
@@ -47,7 +53,7 @@ function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
         height: canvas.height
       }
     });
-    worker.postMessage({ scene: serialize(scene) });
+    worker.postMessage({ scene });
     const renderStartTime = new Date();
     worker.postMessage({
       bucket: {

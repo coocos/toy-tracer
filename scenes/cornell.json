@@ -1,0 +1,181 @@
+{
+    "light": [
+        0,
+        0,
+        0
+    ],
+    "primitives": [
+        {
+            "type": "Plane",
+            "point": [
+                1.5,
+                0,
+                0
+            ],
+            "normal": [
+                -1,
+                0,
+                0
+            ],
+            "material": {
+                "color": [
+                    255,
+                    125,
+                    125
+                ]
+            }
+        },
+        {
+            "type": "Plane",
+            "point": [
+                0,
+                0,
+                -6
+            ],
+            "normal": [
+                0,
+                0,
+                1
+            ],
+            "material": {
+                "color": [
+                    255,
+                    255,
+                    255
+                ]
+            }
+        },
+        {
+            "type": "Plane",
+            "point": [
+                0,
+                1.5,
+                0
+            ],
+            "normal": [
+                0,
+                -1,
+                0
+            ],
+            "material": {
+                "color": [
+                    255,
+                    255,
+                    255
+                ]
+            }
+        },
+        {
+            "type": "Plane",
+            "point": [
+                0,
+                -1.5,
+                0
+            ],
+            "normal": [
+                0,
+                1,
+                0
+            ],
+            "material": {
+                "color": [
+                    255,
+                    255,
+                    255
+                ]
+            }
+        },
+        {
+            "type": "Plane",
+            "point": [
+                -1.5,
+                0,
+                0
+            ],
+            "normal": [
+                1,
+                0,
+                0
+            ],
+            "material": {
+                "color": [
+                    125,
+                    125,
+                    255
+                ]
+            }
+        },
+        {
+            "type": "Sphere",
+            "position": [
+                0,
+                -0.5,
+                -3
+            ],
+            "radius": 1,
+            "material": {
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "glossiness": 16,
+                "reflectivity": 1
+            }
+        },
+        {
+            "type": "Sphere",
+            "position": [
+                -1,
+                -1,
+                -2
+            ],
+            "radius": 0.25,
+            "material": {
+                "color": [
+                    255,
+                    125,
+                    125
+                ],
+                "glossiness": 19,
+                "reflectivity": 0.2
+            }
+        },
+        {
+            "type": "Sphere",
+            "position": [
+                1,
+                -1,
+                -1.5
+            ],
+            "radius": 0.25,
+            "material": {
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "glossiness": 0,
+                "reflectivity": 0.8
+            }
+        },
+        {
+            "type": "Sphere",
+            "position": [
+                0,
+                -1.35,
+                -1.75
+            ],
+            "radius": 0.15,
+            "material": {
+                "color": [
+                    75,
+                    255,
+                    175
+                ],
+                "glossiness": 24,
+                "reflectivity": 0
+            }
+        }
+    ]
+}
