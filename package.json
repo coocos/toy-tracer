@@ -10,9 +10,7 @@
   },
   "author": "Kalle Lämsä",
   "license": "MIT",
-  "dependencies": {
-    "vectorious": "^5.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "parcel-bundler": "^1.12.0"
   }
