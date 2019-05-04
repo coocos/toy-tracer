@@ -41,7 +41,7 @@ function createScreenRay(x, y) {
   return new Ray(camera, direction);
 }
 
-function createScreenRays(x0, y0, x1, y1) {
+function createScreenRays(x0, y0, x1, y1, supersampling = false) {
   const rays = {};
   // Construct ray from camera to pixel plane
   for (let y = y0; y < y1; y++) {
@@ -49,7 +49,17 @@ function createScreenRays(x0, y0, x1, y1) {
       if (rays[x] == undefined) {
         rays[x] = {};
       }
-      rays[x][y] = createScreenRay(x, y);
+      // In supersampling create 4 rays per each pixel
+      if (supersampling) {
+        rays[x][y] = [
+          createScreenRay(x - 0.25, y - 0.25),
+          createScreenRay(x + 0.25, y - 0.25),
+          createScreenRay(x - 0.25, y + 0.25),
+          createScreenRay(x + 0.25, y + 0.25)
+        ];
+      } else {
+        rays[x][y] = createScreenRay(x, y);
+      }
     }
   }
   return rays;
@@ -192,17 +202,29 @@ function trace(ray, depth = 4) {
  */
 function render(x0, y0, x1, y1) {
   let bucket = {};
-  const rays = createScreenRays(x0, y0, x1, y1);
+  const rays = createScreenRays(x0, y0, x1, y1, true);
   const backgroundColor = new Vector(175, 175, 175);
 
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
-      const ray = rays[x][y];
-      const color = trace(ray) || backgroundColor;
       if (bucket[x] === undefined) {
         bucket[x] = {};
       }
-      bucket[x][y] = `rgb(${color.x}, ${color.y}, ${color.z})`;
+
+      const ray = rays[x][y];
+
+      // Supersampling requires averaging multiple rays per pixel
+      if (Array.isArray(ray)) {
+        let color = new Vector(0, 0, 0);
+        for (let r of ray) {
+          color = color.add(trace(r) || backgroundColor);
+        }
+        color = color.scale(1 / ray.length);
+        bucket[x][y] = `rgb(${color.x}, ${color.y}, ${color.z})`;
+      } else {
+        const color = trace(ray) || backgroundColor;
+        bucket[x][y] = `rgb(${color.x}, ${color.y}, ${color.z})`;
+      }
     }
 
     // Update render progress
