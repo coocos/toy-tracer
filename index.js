@@ -19,13 +19,29 @@ const screen = {
 };
 
 /**
+ * Returns a settings object containing settings like
+ * the scene to render.
+ *
+ * @return {object} rendering options
+ */
+function readSettings() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    sceneName: urlParams.get("scene"),
+    supersampling: urlParams.has("supersampling")
+  };
+}
+
+/**
  * Spawns multiple WebWorkers for rendering the scene. Each worker will
  * compute pixel colors for a single vertical slice of the canvas.
  *
  * @param {Number} workerCount - amount of workers to spawn
  */
 async function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
-  const scene = await (await fetch("cornell.json")).json();
+  const settings = readSettings();
+
+  const scene = await (await fetch(`${settings.sceneName}.json`)).json();
 
   const verticalSlice = Math.floor(screenHeight / workerCount);
   for (let i = 0; i < workerCount; i++) {
@@ -51,7 +67,8 @@ async function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
       resolution: {
         width: canvas.width,
         height: canvas.height
-      }
+      },
+      supersampling: settings.supersampling
     });
     worker.postMessage({ scene });
     const renderStartTime = new Date();

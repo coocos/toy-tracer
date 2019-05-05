@@ -5,6 +5,7 @@ import constants from "./constants";
 let scene;
 let screen;
 let resolution;
+let supersampling;
 const camera = new Vector(0, 0, 2.5);
 
 onmessage = function({ data }) {
@@ -20,6 +21,7 @@ onmessage = function({ data }) {
       width: data.resolution.width,
       height: data.resolution.height
     };
+    supersampling = data.supersampling;
   } else if (data.bucket) {
     render(
       data.bucket.x[0],
@@ -202,7 +204,7 @@ function trace(ray, depth = 4) {
  */
 function render(x0, y0, x1, y1) {
   let bucket = {};
-  const rays = createScreenRays(x0, y0, x1, y1, true);
+  const rays = createScreenRays(x0, y0, x1, y1, supersampling);
   const backgroundColor = new Vector(175, 175, 175);
 
   for (let y = y0; y < y1; y++) {
