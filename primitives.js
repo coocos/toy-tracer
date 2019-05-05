@@ -2,13 +2,18 @@ import { Vector } from "./math";
 import constants from "./constants";
 
 export class Sphere {
-  constructor(position, radius, { color, glossiness = 0, reflectivity = 0 }) {
+  constructor(
+    position,
+    radius,
+    { color, glossiness = 0, reflectivity = 0, transparency = 0 }
+  ) {
     this.position = position;
     this.radius = radius;
     this.material = {
       color,
       glossiness,
-      reflectivity
+      reflectivity,
+      transparency
     };
   }
   normal(point) {
@@ -18,7 +23,8 @@ export class Sphere {
     return new Sphere(new Vector(...position), radius, {
       color: new Vector(...material.color),
       glossiness: material.glossiness,
-      reflectivity: material.reflectivity
+      reflectivity: material.reflectivity,
+      transparency: material.transparency
     });
   }
   serialize() {
@@ -29,7 +35,8 @@ export class Sphere {
       material: {
         color: this.material.color.toArray(),
         glossiness: this.material.glossiness,
-        reflectivity: this.material.reflectivity
+        reflectivity: this.material.reflectivity,
+        transparency: this.material.transparency
       }
     };
   }

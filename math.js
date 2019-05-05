@@ -55,4 +55,17 @@ export class Ray {
     const projection = normal.scale(this.direction.dot(normal) * -2);
     return projection.add(this.direction);
   }
+
+  /**
+   * Refracts ray using a surface normal
+   *
+   * @param {Vector} normal - surface normal
+   */
+  refract(normal) {
+    if (this.direction.dot(normal) < 0) {
+      return normal.scale(-1);
+    } else {
+      return normal;
+    }
+  }
 }

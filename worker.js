@@ -117,8 +117,8 @@ function shade(point, normal, primitive, ray) {
 
   // Horizontal checkered textures for planes
   if (primitive.checkered) {
-    const x = Math.floor(point.x * 5);
-    const z = Math.floor(point.z * 5);
+    const x = Math.floor(point.x * 2);
+    const z = Math.floor(point.z * 2);
     if ((x % 2 && z % 2 == 0) || (z % 2 && x % 2 == 0)) {
       color = color.scale(0.5);
     }
@@ -193,6 +193,22 @@ function trace(ray, depth = 4) {
         color = color
           .scale(1 - primitive.material.reflectivity)
           .add(reflectedColor.scale(primitive.material.reflectivity));
+      }
+    }
+
+    if (primitive.material.transparency > 0) {
+      let refractedDirection = ray.refract(normal);
+      if (refractedDirection !== undefined) {
+        const refractedRay = new Ray(
+          point.add(refractedDirection.scale(constants.epsilon)),
+          refractedDirection
+        );
+        const refractedColor = trace(refractedRay, depth - 1);
+        if (refractedColor !== undefined) {
+          color = color
+            .scale(1 - primitive.material.transparency)
+            .add(refractedColor.scale(primitive.material.transparency));
+        }
       }
     }
 
