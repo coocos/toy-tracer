@@ -69,26 +69,33 @@ export class Sphere {
 }
 
 export class Plane {
-  constructor(point, normal, material) {
+  constructor(point, normal, material, checkered = false) {
     this.point = point;
     this.surfaceNormal = normal;
     this.material = material;
+    this.checkered = checkered;
   }
   normal(point) {
     return this.surfaceNormal;
   }
-  static deserialize(point, normal, material) {
-    return new Plane(new Vector(...point), new Vector(...normal), {
-      color: new Vector(...material.color),
-      glossiness: material.glossiness,
-      reflectivity: material.reflectivity
-    });
+  static deserialize(point, normal, material, checkered) {
+    return new Plane(
+      new Vector(...point),
+      new Vector(...normal),
+      {
+        color: new Vector(...material.color),
+        glossiness: material.glossiness,
+        reflectivity: material.reflectivity
+      },
+      checkered
+    );
   }
   serialize() {
     return {
       type: "Plane",
       point: this.point.toArray(),
       normal: this.surfaceNormal.toArray(),
+      checkered: this.checkered,
       material: {
         color: this.material.color.toArray(),
         glossiness: this.material.glossiness,
