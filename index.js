@@ -9,6 +9,13 @@ import "babel-polyfill";
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 
+// Set canvas width to match browser viewport if needed
+const { fullscreen } = readSettings();
+if (fullscreen) {
+  canvas.width = document.documentElement.clientWidth;
+  canvas.height = document.documentElement.clientHeight;
+}
+
 // Screen definition
 const screenWidth = canvas.width;
 const screenHeight = canvas.height;
@@ -28,7 +35,8 @@ function readSettings() {
   const urlParams = new URLSearchParams(window.location.search);
   return {
     sceneName: urlParams.get("scene"),
-    supersampling: urlParams.has("supersampling")
+    supersampling: urlParams.has("supersampling"),
+    fullscreen: urlParams.has("fullscreen")
   };
 }
 
