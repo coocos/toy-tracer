@@ -67,4 +67,23 @@ describe("Sphere", () => {
     const ray = new Ray(new Vector(0, 0, -5), new Vector(0, 0, 1));
     expect(sphere.intersect(ray).toArray()).to.deep.equal([0, 0, -1]);
   });
+  it("should return intersection when ray is inside the sphere", () => {
+    const position = new Vector(0, 0, 0);
+    const color = new Vector(255, 0, 0);
+    const radius = 3;
+    const sphere = new Sphere(position, radius, { color });
+    let ray = new Ray(new Vector(0, 0, 0), new Vector(0, 0, 1));
+    expect(sphere.intersect(ray).toArray()).to.deep.equal([0, 0, 3]);
+
+    ray = new Ray(new Vector(0, 0, 0), new Vector(0, 0, -1));
+    expect(sphere.intersect(ray).toArray()).to.deep.equal([0, 0, -3]);
+  });
+  it("should return undefined when ray does not intersect the sphere", () => {
+    const position = new Vector(0, 0, 3);
+    const color = new Vector(255, 0, 0);
+    const radius = 1;
+    const sphere = new Sphere(position, radius, { color });
+    const ray = new Ray(new Vector(0, 0, 0), new Vector(0, 0, -1));
+    expect(sphere.intersect(ray)).to.equal(undefined);
+  });
 });

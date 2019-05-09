@@ -59,11 +59,22 @@ export class Sphere {
     let firstPoint = ray.origin.add(ray.direction.scale(firstIntersection));
     const fromPointToRay = firstPoint.subtract(ray.origin).normalize();
 
-    if (ray.direction.dot(fromPointToRay)) {
-      return firstPoint;
-    } else {
-      let secondPoint = ray.origin.add(ray.direction.scale(secondIntersection));
+    // Both intersections are behind the ray
+    if (firstIntersection < 0 && secondIntersection < 0) {
+      return;
+    }
+
+    let secondPoint = ray.origin.add(ray.direction.scale(secondIntersection));
+
+    // Both intersections are valid, return the closest one
+    if (firstIntersection > 0 && secondIntersection > 0) {
+      return firstIntersection < secondIntersection ? firstPoint : secondPoint;
+    } else if (secondIntersection > 0) {
+      // Second intersection is hit (happens when ray origin is inside the sphere)
       return secondPoint;
+      // First intersection is hit (happens when ray origin is inside the sphere)
+    } else if (firstIntersection > 0) {
+      return firstPoint;
     }
   }
 }
