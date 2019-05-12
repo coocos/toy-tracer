@@ -83,7 +83,8 @@
                     255,
                     255
                 ]
-            }
+            },
+            "checkered": true
         },
         {
             "type": "Plane",
@@ -127,26 +128,25 @@
             "type": "Sphere",
             "position": [
                 -1,
-                -1,
+                -1.25,
                 -2
             ],
             "radius": 0.25,
             "material": {
                 "color": [
-                    255,
                     125,
+                    255,
                     125
                 ],
-                "glossiness": 19,
-                "reflectivity": 0.2
+                "glossiness": 19
             }
         },
         {
             "type": "Sphere",
             "position": [
                 1,
-                -1,
-                -1.5
+                -1.25,
+                -2.25
             ],
             "radius": 0.25,
             "material": {
@@ -163,18 +163,18 @@
             "type": "Sphere",
             "position": [
                 0,
-                -1.35,
-                -1.75
+                -1.15,
+                -1.5
             ],
-            "radius": 0.15,
+            "radius": 0.35,
             "material": {
                 "color": [
-                    75,
                     255,
-                    175
+                    255,
+                    255
                 ],
                 "glossiness": 24,
-                "reflectivity": 0
+                "transparency": 1
             }
         }
     ]
