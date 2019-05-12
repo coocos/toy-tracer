@@ -46,26 +46,53 @@ export class Ray {
   }
 
   /**
-   * Reflects ray around a normal
+   * Reflects ray around a normal. See Scratchapixel for the
+   * explanation of how to derive the mathematical equations for
+   * computing the reflected ray:
+   *
+   * https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
    *
    * @param {Vector} normal - normal to reflect ray around
+   * @return {Vector} Ray direction after reflection
    */
   reflect(normal) {
-    // To understand how this works see for example: https://www.3dkingdoms.com/weekly/weekly.php?a=2
     const projection = normal.scale(this.direction.dot(normal) * -2);
     return projection.add(this.direction);
   }
 
   /**
-   * Refracts ray using a surface normal
+   * Refracts ray using a surface normal. See Scratchapixel for the
+   * explanation of how to derive the mathematical equations for
+   * computing the refracted ray:
+   *
+   * https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
    *
    * @param {Vector} normal - surface normal
+   * @return {Vector} Ray direction after refraction
    */
-  refract(normal) {
-    if (this.direction.dot(normal) < 0) {
-      return normal.scale(-1);
+  refract(normal, refractionIndex = 1.5) {
+    let angle = this.direction.dot(normal);
+    let refractionIndex1 = 1; // Refraction index of air
+    let refractionIndex2 = refractionIndex;
+    angle = Math.min(1, Math.max(-1, angle));
+    if (angle < 0) {
+      angle = Math.abs(angle);
     } else {
-      return normal;
+      // Ray hits the surface from the inside so flip everything
+      let temp = refractionIndex1;
+      refractionIndex1 = refractionIndex2;
+      refractionIndex2 = temp;
+      normal = normal.scale(-1);
+    }
+
+    const refractionRatio = refractionIndex1 / refractionIndex2;
+    const k = 1 - refractionRatio ** 2 * (1 - angle ** 2);
+
+    // If k is negative then total internal reflection prevents refraction
+    if (k >= 0) {
+      return this.direction
+        .scale(refractionRatio)
+        .add(normal.scale(angle * refractionRatio - Math.sqrt(k)));
     }
   }
 }
