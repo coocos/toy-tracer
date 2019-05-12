@@ -170,7 +170,7 @@ function intersect(ray) {
  * @param depth {number} Recursion depth, i.e. amount of reflection bounces
  * @return {Vector} Color of the intersected point
  */
-function trace(ray, depth = 4) {
+function trace(ray, depth = 8) {
   if (depth == 0) {
     return;
   }
@@ -214,7 +214,7 @@ function trace(ray, depth = 4) {
 
     // Make shadowed points darker
     if (isShadowed(point, normal, primitive, scene)) {
-      color = color.scale(0.25);
+      color = color.scale(0.5);
     }
     return color;
   }
