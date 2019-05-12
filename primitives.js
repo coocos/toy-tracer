@@ -45,7 +45,7 @@ export class Sphere {
     let projection = toSphere.dot(ray.direction);
 
     // Sphere is behind the ray
-    if (projection < 0.0) {
+    if (projection < 0) {
       return;
     }
 
@@ -54,23 +54,17 @@ export class Sphere {
     if (distance > this.radius) {
       return;
     }
+    let h = Math.sqrt(this.radius ** 2 - distance ** 2);
 
-    let h = this.radius ** 2 - distance ** 2;
-    if (h < 0) {
-      return;
-    }
-    h = Math.sqrt(h);
-
-    let firstIntersection = sphereDistance - h;
-    let secondIntersection = sphereDistance + h;
-    let firstPoint = ray.origin.add(ray.direction.scale(firstIntersection));
-    const fromPointToRay = firstPoint.subtract(ray.origin).normalize();
+    let firstIntersection = projection - h;
+    let secondIntersection = projection + h;
 
     // Both intersections are behind the ray
     if (firstIntersection < 0 && secondIntersection < 0) {
       return;
     }
 
+    let firstPoint = ray.origin.add(ray.direction.scale(firstIntersection));
     let secondPoint = ray.origin.add(ray.direction.scale(secondIntersection));
 
     // Both intersections are valid, return the closest one
