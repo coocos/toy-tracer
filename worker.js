@@ -6,12 +6,11 @@ let scene;
 let screen;
 let resolution;
 let supersampling;
-const camera = new Vector(0, 0, 2.5);
+let camera;
 
 onmessage = function({ data }) {
   if (data.scene) {
-    scene = { ...scene, ...deserialize(data.scene) };
-    console.log(scene);
+    scene = deserialize(data.scene);
   } else if (data.screen) {
     screen = {
       topLeft: new Vector(...data.screen.topLeft),
@@ -38,9 +37,9 @@ function createScreenRay(x, y) {
   const v = uv.y * y / resolution.height;
   const direction = screen.topLeft
     .add(new Vector(u, v, 0))
-    .subtract(camera)
+    .subtract(scene.camera)
     .normalize();
-  return new Ray(camera, direction);
+  return new Ray(scene.camera, direction);
 }
 
 function createScreenRays(x0, y0, x1, y1, supersampling = false) {
