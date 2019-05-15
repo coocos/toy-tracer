@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Ray, Vector } from "./math";
-import { Sphere } from "./primitives";
+import { Sphere, Material } from "./primitives";
 
 describe("Sphere", () => {
   it("should map constructor arguments to attributes", () => {
@@ -30,7 +30,7 @@ describe("Sphere", () => {
     const position = new Vector(0, 0, 0);
     const color = new Vector(255, 0, 0);
     const radius = 5;
-    const sphere = new Sphere(position, radius, { color });
+    const sphere = new Sphere(position, radius, new Material(color));
     expect(sphere.serialize()).to.deep.equal({
       type: "Sphere",
       position: position.toArray(),

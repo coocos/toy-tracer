@@ -1,43 +1,55 @@
 import { Vector } from "./math";
 import constants from "./constants";
 
-export class Sphere {
-  constructor(
-    position,
-    radius,
-    { color, glossiness = 0, reflectivity = 0, transparency = 0 }
-  ) {
-    this.position = position;
-    this.radius = radius;
-    this.material = {
-      color,
+export class Material {
+  constructor(color, glossiness = 0, reflectivity = 0, transparency = 0) {
+    this.color = color;
+    this.glossiness = glossiness;
+    this.reflectivity = reflectivity;
+    this.transparency = transparency;
+  }
+
+  serialize() {
+    return {
+      color: this.color.toArray(),
+      glossiness: this.glossiness,
+      reflectivity: this.reflectivity,
+      transparency: this.transparency
+    };
+  }
+
+  static deserialize({ color, glossiness, reflectivity, transparency }) {
+    return new Material(
+      new Vector(...color),
       glossiness,
       reflectivity,
       transparency
-    };
+    );
+  }
+}
+
+export class Sphere {
+  constructor(position, radius, material) {
+    this.position = position;
+    this.radius = radius;
+    this.material = material;
   }
   normal(point) {
     return point.subtract(this.position).normalize();
   }
   static deserialize(position, radius, material) {
-    return new Sphere(new Vector(...position), radius, {
-      color: new Vector(...material.color),
-      glossiness: material.glossiness,
-      reflectivity: material.reflectivity,
-      transparency: material.transparency
-    });
+    return new Sphere(
+      new Vector(...position),
+      radius,
+      Material.deserialize(material)
+    );
   }
   serialize() {
     return {
       type: "Sphere",
       position: this.position.toArray(),
       radius: this.radius,
-      material: {
-        color: this.material.color.toArray(),
-        glossiness: this.material.glossiness,
-        reflectivity: this.material.reflectivity,
-        transparency: this.material.transparency
-      }
+      material: this.material.serialize()
     };
   }
   intersect(ray) {
@@ -94,11 +106,7 @@ export class Plane {
     return new Plane(
       new Vector(...point),
       new Vector(...normal),
-      {
-        color: new Vector(...material.color),
-        glossiness: material.glossiness,
-        reflectivity: material.reflectivity
-      },
+      Material.deserialize(material),
       checkered
     );
   }
@@ -108,11 +116,7 @@ export class Plane {
       point: this.point.toArray(),
       normal: this.surfaceNormal.toArray(),
       checkered: this.checkered,
-      material: {
-        color: this.material.color.toArray(),
-        glossiness: this.material.glossiness,
-        reflectivity: this.material.reflectivity
-      }
+      material: material.serialize()
     };
   }
   intersect(ray) {
