@@ -93,8 +93,8 @@ export class Sphere {
 }
 
 export class Plane {
-  constructor(point, normal, material, checkered = false) {
-    this.point = point;
+  constructor(position, normal, material, checkered = false) {
+    this.position = position;
     this.surfaceNormal = normal;
     this.material = material;
     this.checkered = checkered;
@@ -102,9 +102,9 @@ export class Plane {
   normal(point) {
     return this.surfaceNormal;
   }
-  static deserialize(point, normal, material, checkered) {
+  static deserialize(position, normal, material, checkered) {
     return new Plane(
-      new Vector(...point),
+      new Vector(...position),
       new Vector(...normal),
       Material.deserialize(material),
       checkered
@@ -113,7 +113,7 @@ export class Plane {
   serialize() {
     return {
       type: "Plane",
-      point: this.point.toArray(),
+      position: this.position.toArray(),
       normal: this.surfaceNormal.toArray(),
       checkered: this.checkered,
       material: material.serialize()
@@ -126,12 +126,55 @@ export class Plane {
     if (Math.abs(denominator) < constants.epsilon) {
       return;
     }
-    const numerator = this.point.subtract(ray.origin).dot(this.surfaceNormal);
+    const numerator = this.position
+      .subtract(ray.origin)
+      .dot(this.surfaceNormal);
     const distance = numerator / denominator;
 
     // If distance is negative then the plane is behind the ray
     if (distance >= 0) {
       return ray.origin.add(ray.direction.scale(distance));
+    }
+  }
+}
+
+export class Rectangle extends Plane {
+  constructor(position, normal, size, material) {
+    super(position, normal, material);
+    this.size = size;
+  }
+  normal(point) {
+    return this.surfaceNormal;
+  }
+  static deserialize(position, normal, size, material) {
+    return new Rectangle(
+      new Vector(...position),
+      new Vector(...normal),
+      size,
+      Material.deserialize(material)
+    );
+  }
+  serialize() {
+    return {
+      type: "Rectangle",
+      position: this.position.toArray(),
+      normal: this.surfaceNormal.toArray(),
+      size: this.size,
+      material: material.serialize()
+    };
+  }
+  intersect(ray) {
+    const intersection = super.intersect(ray);
+    if (intersection === undefined) {
+      return;
+    }
+
+    if (
+      Math.abs(intersection.x - this.position.x) < this.size &&
+      Math.abs(intersection.y - this.position.y) < this.size &&
+      Math.abs(intersection.z - this.position.z) < this.size
+    ) {
+      return intersection;
     }
   }
 }
