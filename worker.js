@@ -75,7 +75,7 @@ function createScreenRays(x0, y0, x1, y1, supersampling = false) {
 function isShadowed(point, normal, primitive, scene) {
   const fromPointToLight = scene.light.subtract(point);
   const ray = new Ray(
-    point.add(normal.scale(constants.epsilon)),
+    point.add(normal.scale(constants.EPSILON)),
     fromPointToLight.normalize()
   );
 
@@ -115,7 +115,7 @@ function computeAmbientOcclusion(point, normal, samples) {
       hemisphereNormal = hemisphereNormal.scale(-1);
     }
     const ray = new Ray(
-      point.add(hemisphereNormal.scale(constants.epsilon)),
+      point.add(hemisphereNormal.scale(constants.EPSILON)),
       hemisphereNormal
     );
     const [intersection, _] = intersect(ray);
@@ -162,7 +162,7 @@ function shade(point, normal, primitive, ray) {
     const halfVector = toLight.add(toCamera).scale(0.5);
     const specular =
       Math.max(0, halfVector.dot(normal)) ** primitive.material.glossiness;
-    return color.add(constants.white.scale(specular));
+    return color.add(constants.WHITE.scale(specular));
   }
 
   return color;
@@ -217,7 +217,7 @@ function trace(ray, depth = 8) {
     // Calculate if point reflects another object in the scene
     if (primitive.material.reflectivity > 0) {
       const reflectedRay = new Ray(
-        point.add(normal.scale(constants.epsilon)),
+        point.add(normal.scale(constants.EPSILON)),
         ray.reflect(normal)
       );
       const reflectedColor = trace(reflectedRay, depth - 1);
@@ -232,7 +232,7 @@ function trace(ray, depth = 8) {
       let refractedDirection = ray.refract(normal);
       if (refractedDirection !== undefined) {
         const refractedRay = new Ray(
-          point.add(refractedDirection.scale(constants.epsilon)),
+          point.add(refractedDirection.scale(constants.EPSILON)),
           refractedDirection
         );
         const refractedColor = trace(refractedRay, depth - 1);
