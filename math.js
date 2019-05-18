@@ -37,7 +37,38 @@ export class Vector {
   dot(other) {
     return this.x * other.x + this.y * other.y + this.z * other.z;
   }
+
+  /**
+   * Returns a random unit vector. Vectors are randomly picked
+   * from a pool of precomputed unit vectors for performancer reasons.
+   *
+   * @return {Vector} Random unit vector
+   */
+  static randomUnitVector() {
+    return randomUnitVectors[
+      Math.floor(Math.random() * randomUnitVectors.length)
+    ];
+  }
 }
+
+/**
+ * Returns random number between -1 and 1
+ * @return {Number} random number between -1 and 1
+ */
+function randomValue(range = 1) {
+  return Math.random() * (Math.random() > 0.5 ? -range : range);
+}
+
+// An array of precomputed random unit vectors
+const randomUnitVectors = (() => {
+  const vectors = [];
+  while (vectors.length < 512) {
+    vectors.push(
+      new Vector(randomValue(), randomValue(), randomValue()).normalize()
+    );
+  }
+  return vectors;
+})();
 
 export class Ray {
   constructor(origin, direction) {

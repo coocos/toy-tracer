@@ -5,7 +5,7 @@ import constants from "./constants";
 let scene;
 let screen;
 let resolution;
-let supersampling;
+let settings;
 let camera;
 
 onmessage = function({ data }) {
@@ -20,7 +20,7 @@ onmessage = function({ data }) {
       width: data.resolution.width,
       height: data.resolution.height
     };
-    supersampling = data.supersampling;
+    settings = data.settings;
   } else if (data.bucket) {
     render(
       data.bucket.x[0],
@@ -96,6 +96,39 @@ function isShadowed(point, normal, primitive, scene) {
     }
   }
   return false;
+}
+
+/**
+ * Computes amount of ambient occlusion
+ *
+ * @param {Vector} point Occluded point
+ * @param {Vector} normal Surface normal at point
+ * @return {Number} amount of occlusion ranging between 0 to 1
+ */
+function computeAmbientOcclusion(point, normal, samples) {
+  let hits = 0;
+
+  for (let i = 0; i < samples; i++) {
+    let hemisphereNormal = Vector.randomUnitVector();
+    // Generated normal is away from the hemisphere so flip it
+    if (hemisphereNormal.dot(normal) < 0) {
+      hemisphereNormal = hemisphereNormal.scale(-1);
+    }
+    const ray = new Ray(
+      point.add(hemisphereNormal.scale(constants.epsilon)),
+      hemisphereNormal
+    );
+    const [intersection, _] = intersect(ray);
+    if (
+      intersection !== null &&
+      point.subtract(intersection).magnitude() <
+        constants.AMBIENT_OCCLUSION_MAX_DISTANCE
+    ) {
+      // TODO: The intersection needs to be weighted according to distance
+      hits += 1;
+    }
+  }
+  return 1 - hits / samples;
 }
 
 /**
@@ -215,6 +248,19 @@ function trace(ray, depth = 8) {
     if (isShadowed(point, normal, primitive, scene)) {
       color = color.scale(0.5);
     }
+
+    // Compute ambient occlusion
+    if (settings.ambientOcclusionSamples > 0) {
+      const ambientOcclusionFactor = computeAmbientOcclusion(
+        point,
+        normal,
+        settings.ambientOcclusionSamples
+      );
+      if (ambientOcclusionFactor < 1) {
+        color = color.scale(ambientOcclusionFactor);
+      }
+    }
+
     return color;
   }
 }
@@ -229,7 +275,7 @@ function trace(ray, depth = 8) {
  */
 function render(x0, y0, x1, y1) {
   let bucket = {};
-  const rays = createScreenRays(x0, y0, x1, y1, supersampling);
+  const rays = createScreenRays(x0, y0, x1, y1, settings.supersampling);
   const backgroundColor = new Vector(175, 175, 175);
 
   for (let y = y0; y < y1; y++) {

@@ -36,7 +36,8 @@ function readSettings() {
   return {
     sceneName: urlParams.get("scene"),
     supersampling: urlParams.has("supersampling"),
-    fullscreen: urlParams.has("fullscreen")
+    fullscreen: urlParams.has("fullscreen"),
+    ambientOcclusionSamples: urlParams.get("ambientOcclusionSamples")
   };
 }
 
@@ -76,7 +77,7 @@ async function spawnWorkers(workerCount = navigator.hardwareConcurrency || 1) {
         width: canvas.width,
         height: canvas.height
       },
-      supersampling: settings.supersampling
+      settings
     });
     worker.postMessage({ scene });
     const renderStartTime = new Date();
