@@ -118,13 +118,13 @@ function computeAmbientOcclusion({ point, normal }, samples) {
       hemisphereNormal
     );
     const intersection = intersect(ray);
-    if (
-      intersection.primitive !== null &&
-      point.subtract(intersection.point).magnitude() <
-        constants.AMBIENT_OCCLUSION_MAX_DISTANCE
-    ) {
-      // TODO: The intersection needs to be weighted according to distance
-      hits += 1;
+    if (intersection.primitive === null) {
+      continue;
+    }
+    const distance = point.subtract(intersection.point).magnitude();
+    if (distance < constants.AMBIENT_OCCLUSION_MAX_DISTANCE) {
+      // Weigh ambient occlusion strength according to distance
+      hits += 1 - distance / constants.AMBIENT_OCCLUSION_MAX_DISTANCE;
     }
   }
   return 1 - hits / samples;
@@ -203,7 +203,7 @@ function intersect(ray) {
  * @param depth {number} Recursion depth, i.e. amount of reflection bounces
  * @return {Vector} Color of the intersected point
  */
-function trace(ray, depth = 8) {
+function trace(ray, depth = 4) {
   if (depth == 0) {
     return;
   }
