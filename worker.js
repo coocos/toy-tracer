@@ -197,7 +197,7 @@ function intersect(ray) {
   return {
     point,
     primitive: closestPrimitive,
-    normal: closestPrimitive.normal(point)
+    normal: closestPrimitive === null ? null : closestPrimitive.normal(point)
   };
 }
 
