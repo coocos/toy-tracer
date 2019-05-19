@@ -108,6 +108,12 @@ function computeAmbientOcclusion({ point, normal }, samples) {
   let hits = 0;
 
   for (let i = 0; i < samples; i++) {
+    // Stop ambient occlusion computation if half the samples have
+    // been traced without a single meaningful occlusion
+    if (i > samples / 2 && hits === 0) {
+      return 1;
+    }
+
     let hemisphereNormal = Vector.randomUnitVector();
     // Generated normal is away from the hemisphere so flip it
     if (hemisphereNormal.dot(normal) < 0) {
