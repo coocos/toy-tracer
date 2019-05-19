@@ -69,10 +69,10 @@ function createScreenRays(x0, y0, x1, y1, supersampling = false) {
 /**
  * Returns whether point is shadowed or not
  *
- * @param {Vector} point
+ * @param {Object} Intersection object
  * @return {boolean} True if shadowed, false if not
  */
-function isShadowed(point, normal, primitive, scene) {
+function isShadowed({ point, normal, primitive }, scene) {
   const fromPointToLight = scene.light.subtract(point);
   const ray = new Ray(
     point.add(normal.scale(constants.EPSILON)),
@@ -101,11 +101,10 @@ function isShadowed(point, normal, primitive, scene) {
 /**
  * Computes amount of ambient occlusion
  *
- * @param {Vector} point Occluded point
- * @param {Vector} normal Surface normal at point
- * @return {Number} amount of occlusion ranging between 0 to 1
+ * @param {Object} Intersection object
+ * @return {Number} Amount of occlusion ranging between 0 to 1
  */
-function computeAmbientOcclusion(point, normal, samples) {
+function computeAmbientOcclusion({ point, normal }, samples) {
   let hits = 0;
 
   for (let i = 0; i < samples; i++) {
@@ -118,10 +117,10 @@ function computeAmbientOcclusion(point, normal, samples) {
       point.add(hemisphereNormal.scale(constants.EPSILON)),
       hemisphereNormal
     );
-    const [intersection, _] = intersect(ray);
+    const intersection = intersect(ray);
     if (
-      intersection !== null &&
-      point.subtract(intersection).magnitude() <
+      intersection.primitive !== null &&
+      point.subtract(intersection.point).magnitude() <
         constants.AMBIENT_OCCLUSION_MAX_DISTANCE
     ) {
       // TODO: The intersection needs to be weighted according to distance
@@ -134,13 +133,11 @@ function computeAmbientOcclusion(point, normal, samples) {
 /**
  * Computes point color using Phong lighting model
  *
- * @param {Vector} point Point to compute color for
- * @param {Vector} normal Surface normal
- * @param {Primitive} primitive Primitive the point belongs to
+ * @param {Object} Intersection object
  * @param {Ray} ray Viewing ray
  * @return {Vector} RGB vector
  */
-function shade(point, normal, primitive, ray) {
+function shade({ point, normal, primitive }, ray) {
   // Calculate Lambertian reflectance / diffuse
   const toLight = scene.light.subtract(point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
@@ -191,7 +188,11 @@ function intersect(ray) {
       }
     }
   }
-  return [point, closestPrimitive];
+  return {
+    point,
+    primitive: closestPrimitive,
+    normal: closestPrimitive.normal(point)
+  };
 }
 
 /**
@@ -207,53 +208,55 @@ function trace(ray, depth = 8) {
     return;
   }
 
-  const [point, primitive] = intersect(ray);
+  const intersection = intersect(ray);
 
   // Shade intersected primitive
-  if (primitive !== null) {
-    const normal = primitive.normal(point);
-    let color = shade(point, normal, primitive, ray);
+  if (intersection.primitive !== null) {
+    let color = shade(intersection, ray);
 
     // Calculate if point reflects another object in the scene
-    if (primitive.material.reflectivity > 0) {
+    if (intersection.primitive.material.reflectivity > 0) {
       const reflectedRay = new Ray(
-        point.add(normal.scale(constants.EPSILON)),
-        ray.reflect(normal)
+        intersection.point.add(intersection.normal.scale(constants.EPSILON)),
+        ray.reflect(intersection.normal)
       );
       const reflectedColor = trace(reflectedRay, depth - 1);
       if (reflectedColor !== undefined) {
         color = color
-          .scale(1 - primitive.material.reflectivity)
-          .add(reflectedColor.scale(primitive.material.reflectivity));
+          .scale(1 - intersection.primitive.material.reflectivity)
+          .add(
+            reflectedColor.scale(intersection.primitive.material.reflectivity)
+          );
       }
     }
 
-    if (primitive.material.transparency > 0) {
-      let refractedDirection = ray.refract(normal);
+    if (intersection.primitive.material.transparency > 0) {
+      let refractedDirection = ray.refract(intersection.normal);
       if (refractedDirection !== undefined) {
         const refractedRay = new Ray(
-          point.add(refractedDirection.scale(constants.EPSILON)),
+          intersection.point.add(refractedDirection.scale(constants.EPSILON)),
           refractedDirection
         );
         const refractedColor = trace(refractedRay, depth - 1);
         if (refractedColor !== undefined) {
           color = color
-            .scale(1 - primitive.material.transparency)
-            .add(refractedColor.scale(primitive.material.transparency));
+            .scale(1 - intersection.primitive.material.transparency)
+            .add(
+              refractedColor.scale(intersection.primitive.material.transparency)
+            );
         }
       }
     }
 
     // Make shadowed points darker
-    if (isShadowed(point, normal, primitive, scene)) {
+    if (isShadowed(intersection, scene)) {
       color = color.scale(0.5);
     }
 
     // Compute ambient occlusion
     if (settings.ambientOcclusionSamples > 0) {
       const ambientOcclusionFactor = computeAmbientOcclusion(
-        point,
-        normal,
+        intersection,
         settings.ambientOcclusionSamples
       );
       if (ambientOcclusionFactor < 1) {
