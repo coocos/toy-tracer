@@ -2,7 +2,12 @@ import { Vector } from "./math";
 import constants from "./constants";
 
 export class Material {
-  constructor(color, glossiness = 0, reflectivity = 0, transparency = 0) {
+  constructor(
+    color = constants.WHITE,
+    glossiness = 0,
+    reflectivity = 0,
+    transparency = 0
+  ) {
     this.color = color;
     this.glossiness = glossiness;
     this.reflectivity = reflectivity;
@@ -29,7 +34,7 @@ export class Material {
 }
 
 export class Sphere {
-  constructor(position, radius, material) {
+  constructor(position, radius, material = new Material()) {
     this.position = position;
     this.radius = radius;
     this.material = material;
@@ -93,7 +98,7 @@ export class Sphere {
 }
 
 export class Plane {
-  constructor(position, normal, material, checkered = false) {
+  constructor(position, normal, material = new Material(), checkered = false) {
     this.position = position;
     this.surfaceNormal = normal;
     this.material = material;
@@ -139,7 +144,7 @@ export class Plane {
 }
 
 export class Rectangle extends Plane {
-  constructor(position, normal, size, material) {
+  constructor(position, normal, size, material = new Material()) {
     super(position, normal, material);
     this.size = size;
   }

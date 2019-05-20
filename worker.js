@@ -73,14 +73,15 @@ function createScreenRays(x0, y0, x1, y1, supersampling = false) {
  * @return {boolean} True if shadowed, false if not
  */
 function isShadowed({ point, normal, primitive }, scene) {
-  const fromPointToLight = scene.light.subtract(point);
+  const fromPointToLight = scene.light.position.subtract(point);
   const ray = new Ray(
     point.add(normal.scale(constants.EPSILON)),
     fromPointToLight.normalize()
   );
 
   for (let other of scene.primitives) {
-    if (other === primitive) {
+    // Object cannot shadow itself or be shadowed by the light source
+    if (other === primitive || other === scene.light.primitive) {
       continue;
     }
 
@@ -145,7 +146,7 @@ function computeAmbientOcclusion({ point, normal }, samples) {
  */
 function shade({ point, normal, primitive }, ray) {
   // Calculate Lambertian reflectance / diffuse
-  const toLight = scene.light.subtract(point).normalize();
+  const toLight = scene.light.position.subtract(point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
 
   let color = primitive.material.color.scale(lambertian);
@@ -218,6 +219,11 @@ function trace(ray, depth = 4) {
 
   // Shade intersected primitive
   if (intersection.primitive !== null) {
+    // Light source does not need to be shaded
+    if (intersection.primitive === scene.light.primitive) {
+      return constants.WHITE;
+    }
+
     let color = shade(intersection, ray);
 
     // Calculate if point reflects another object in the scene

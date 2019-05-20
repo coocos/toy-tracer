@@ -22,6 +22,7 @@ describe("Rectangle", () => {
 
     const rectangle = new Rectangle(position, normal, size, { color });
     let ray = new Ray(new Vector(0, 0, 0), new Vector(0, 0, 1));
+    let intersection = rectangle.intersect(ray);
 
     expect(intersection.toArray()).to.deep.equal([0, 0, 5]);
 

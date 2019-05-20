@@ -4,11 +4,20 @@
         0,
         2.5
     ],
-    "light": [
-        0,
-        0,
-        0
-    ],
+    "light": {
+        "position": [
+            0,
+            1.4,
+            -2
+        ],
+        "normal": [
+            0,
+            -1,
+            0
+        ],
+        "type": "area",
+        "size": 0.5
+    },
     "primitives": [
         {
             "type": "Plane",
