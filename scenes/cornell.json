@@ -16,7 +16,7 @@
             0
         ],
         "type": "area",
-        "size": 0.5
+        "size": 0.25
     },
     "primitives": [
         {
@@ -127,7 +127,7 @@
                 -0.5,
                 -3
             ],
-            "radius": 1,
+            "radius": 0.8,
             "material": {
                 "color": [
                     255,

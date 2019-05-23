@@ -37,7 +37,8 @@ function readSettings() {
     sceneName: urlParams.get("scene"),
     supersampling: urlParams.has("supersampling"),
     fullscreen: urlParams.has("fullscreen"),
-    ambientOcclusionSamples: urlParams.get("ambientOcclusionSamples")
+    ambientOcclusionSamples: urlParams.get("ambientOcclusionSamples"),
+    shadowSamples: urlParams.get("shadowSamples") || 1
   };
 }
 

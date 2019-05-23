@@ -39,6 +39,20 @@ export class Vector {
   }
 
   /**
+   * Returns the cross product of the vector with another vector
+   *
+   * @param {Vector} other Vector to create cross product for
+   * @return {Vector} Cross product vector
+   */
+  cross(other) {
+    return new Vector(
+      this.y * other.z - this.z * other.y,
+      this.z * other.x - this.x * other.z,
+      this.x * other.y - this.y * other.x
+    );
+  }
+
+  /**
    * Returns a random unit vector. Vectors are randomly picked
    * from a pool of precomputed unit vectors for performancer reasons.
    *

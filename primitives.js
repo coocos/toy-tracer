@@ -159,6 +159,18 @@ export class Rectangle extends Plane {
       Material.deserialize(material)
     );
   }
+  /**
+   * Returns a random point on the rectangle
+   *
+   * @return {Vector} Random point in the rectangle
+   */
+  randomPoint() {
+    const cross = Vector.randomUnitVector()
+      .cross(this.surfaceNormal)
+      .normalize()
+      .scale(this.size);
+    return this.position.add(cross);
+  }
   serialize() {
     return {
       type: "Rectangle",

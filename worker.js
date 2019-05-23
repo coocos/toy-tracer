@@ -67,40 +67,58 @@ function createScreenRays(x0, y0, x1, y1, supersampling = false) {
 }
 
 /**
- * Returns whether point is shadowed or not
+ * Returns strength of shadows at given intersection.
+ *
+ * If settings.shadowSamples is larger than 1 then soft shadows
+ * are computed by distributing perturbed rays towards the light
+ * source and averaging the intersections.
  *
  * @param {Object} Intersection object
- * @return {boolean} True if shadowed, false if not
+ * @return {Number} Shadow strength between 0 and 1
  */
-function isShadowed({ point, normal, primitive }, scene) {
-  const fromPointToLight = scene.light.position.subtract(point);
-  const ray = new Ray(
-    point.add(normal.scale(constants.EPSILON)),
-    fromPointToLight.normalize()
-  );
-
-  for (let other of scene.primitives) {
-    // Object cannot shadow itself or be shadowed by the light source
-    if (other === primitive || other === scene.light.primitive) {
-      continue;
+function computeShadowStrength({ point, normal, primitive }, scene) {
+  let hits = 0;
+  for (let i = 0; i < settings.shadowSamples; i++) {
+    let fromPointToLight;
+    if (settings.shadowSamples > 1) {
+      fromPointToLight = scene.light.primitive.randomPoint().subtract(point);
+    } else {
+      fromPointToLight = scene.light.position.subtract(point);
     }
+    const ray = new Ray(
+      point.add(normal.scale(constants.EPSILON)),
+      fromPointToLight.normalize()
+    );
+    for (let other of scene.primitives) {
+      // Object cannot shadow itself or be shadowed by the light source
+      if (other === primitive || other === scene.light.primitive) {
+        continue;
+      }
 
-    const intersection = other.intersect(ray);
-    if (intersection !== undefined) {
-      const distanceToIntersection = point.subtract(intersection).magnitude();
+      const intersection = other.intersect(ray);
+      if (intersection !== undefined) {
+        const distanceToIntersection = point.subtract(intersection).magnitude();
 
-      // If the intersection distance is further away than the
-      // distance to the light then there is no shadowing
-      if (distanceToIntersection < fromPointToLight.magnitude()) {
-        return true;
+        // If the intersection distance is further away than the
+        // distance to the light then there is no shadowing
+        if (distanceToIntersection < fromPointToLight.magnitude()) {
+          hits += 1;
+          break;
+        }
       }
     }
   }
-  return false;
+  return 1 - hits / settings.shadowSamples * constants.SHADOW_STRENGTH;
 }
 
 /**
- * Computes amount of ambient occlusion
+ * Computes amount of ambient occlusion.
+ *
+ * Ambient occlusion is computed by casting random rays towards
+ * the hemisphere of the normal. These rays are intersected
+ * against the geometry and intersections are weighted by
+ * distance and averaged to compute the amount of ambient occlusion
+ * the point receives.
  *
  * @param {Object} Intersection object
  * @return {Number} Amount of occlusion ranging between 0 to 1
@@ -261,9 +279,7 @@ function trace(ray, depth = 4) {
     }
 
     // Make shadowed points darker
-    if (isShadowed(intersection, scene)) {
-      color = color.scale(0.5);
-    }
+    color = color.scale(computeShadowStrength(intersection, scene));
 
     // Compute ambient occlusion
     if (settings.ambientOcclusionSamples > 0) {
