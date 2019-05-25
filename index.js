@@ -29,7 +29,7 @@ const screen = {
  * Returns a settings object containing settings like
  * the scene to render.
  *
- * @return {object} rendering options
+ * @return {Object} rendering options
  */
 function readSettings() {
   const urlParams = new URLSearchParams(window.location.search);

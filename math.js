@@ -1,30 +1,68 @@
 export class Vector {
+  /**
+   * Constructs a Vector
+   *
+   * @param {Number} x - x component
+   * @param {Number} y - y component
+   * @param {Number} z - z component
+   * @return {Vector} Vector
+   */
   constructor(x, y, z) {
     this.x = x;
     this.y = y;
     this.z = z;
   }
 
+  /**
+   * Returns a new Vector formed by subtracting the second vector from this vector
+   *
+   * @return {Vector} Vector
+   */
   subtract(vec) {
     return new Vector(this.x - vec.x, this.y - vec.y, this.z - vec.z);
   }
 
+  /**
+   * Returns a new Vector formed by adding the second vector to this vector
+   *
+   * @return {Vector} Vector
+   */
   add(vec) {
     return new Vector(this.x + vec.x, this.y + vec.y, this.z + vec.z);
   }
 
+  /**
+   * Returns the components of the vector as an array
+   *
+   * @return {Array} Array containing the vector components
+   */
   toArray() {
     return [this.x, this.y, this.z];
   }
 
+  /**
+   * Returns the magnitude of the vector
+   *
+   * @return {Number} Magnitude
+   */
   magnitude() {
     return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
   }
 
+  /**
+   * Returns a copy of the vector scaled using a scalar value
+   *
+   * @return {Vector} Scaled vector
+   */
   scale(scalar) {
     return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
   }
 
+  /**
+   * Returns a copy of the vector normalized to unit length
+   *
+   * @return {Vector} Normalized vector
+   */
   normalize() {
     const magnitude = Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
     return new Vector(
@@ -34,6 +72,12 @@ export class Vector {
     );
   }
 
+  /**
+   * Returns the dot product of the two vectors
+   *
+   * @param {Vector} other Vector
+   * @return {Number} Dot product
+   */
   dot(other) {
     return this.x * other.x + this.y * other.y + this.z * other.z;
   }

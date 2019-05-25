@@ -31,6 +31,13 @@ onmessage = function({ data }) {
   }
 };
 
+/**
+ * Creates a ray from the camera towards the pixel x, y
+ *
+ * @param {Number} x - pixel x coordinate
+ * @param {Number} y - pixel y coordinate
+ * @return {Ray} ray from camera to the pixel
+ */
 function createScreenRay(x, y) {
   const uv = screen.bottomRight.subtract(screen.topLeft);
   const u = uv.x * x / resolution.width;
@@ -42,6 +49,16 @@ function createScreenRay(x, y) {
   return new Ray(scene.camera, direction);
 }
 
+/**
+ * Creates rays from camera to the image plane
+ *
+ * @param {Number} x0 - image plane top left x coordinate
+ * @param {Number} y0 - image plane top left y coordinate
+ * @param {Number} x1 - image plane bottom right x coordinate
+ * @param {Number} y1 - image plane bottom right y coordinate
+ * @param {Boolean} supersampling - whether to create multiple rays per pixel
+ * @return {Object} object which maps pixels to rays
+ */
 function createScreenRays(x0, y0, x1, y1, supersampling = false) {
   const rays = {};
   // Construct ray from camera to pixel plane
@@ -332,7 +349,7 @@ function render(x0, y0, x1, y1) {
     }
 
     // Update render progress
-    if (y % 16 == 0) {
+    if (y % constants.UPDATE_INTERVAL == 0) {
       postMessage({
         bucket
       });
