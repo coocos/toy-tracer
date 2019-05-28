@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Ray, Vector } from "./math";
+import { Ray, Vector } from "../src/math";
 
 describe("Ray", () => {
   it("should reflect around normal", () => {

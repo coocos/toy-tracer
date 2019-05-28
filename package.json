@@ -4,9 +4,9 @@
   "description": "Toy ray tracer",
   "main": "index.js",
   "scripts": {
-    "watch": "parcel index.html worker.js",
-    "build": "parcel build --public-url './' index.html worker.js",
-    "test": "npx mocha --require @babel/register *.spec.js"
+    "watch": "parcel src/index.html src/worker.js",
+    "build": "parcel build --public-url './' src/index.html src/worker.js",
+    "test": "npx mocha --require @babel/register tests/*.spec.js"
   },
   "author": "Kalle Lämsä",
   "license": "MIT",

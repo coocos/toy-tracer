@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Vector } from "./math";
+import { Vector } from "../src/math";
 
 describe("Vector operation", () => {
   it("should add two vectors", () => {

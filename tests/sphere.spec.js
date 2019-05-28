@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { Ray, Vector } from "./math";
-import { Sphere, Material } from "./primitives";
+import { Ray, Vector } from "../src/math";
+import { Sphere, Material } from "../src/primitives";
 
 describe("Sphere", () => {
   it("should map constructor arguments to attributes", () => {
