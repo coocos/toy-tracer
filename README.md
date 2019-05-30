@@ -1,12 +1,14 @@
-# toy-tracer
-
 This a toy grade ray tracer written with JavaScript.
 
 ## Screenshots
 
+Reflective spheres with a refractive sphere in the middle with sharp shadows:
+
+![toy-tracer](docs/spheres.png)
+
 A simple [Cornell'ish box](https://en.wikipedia.org/wiki/Cornell_box) with an area light illuminating four spheres:
 
-![toy-tracer](docs/screenshot.png)
+![toy-tracer](docs/cornell.png)
 
 Notice the soft shadows cast by the spheres, ambient occlusion outlining the corners of box, the mirror-like reflections of the large sphere and the refractive sphere at the front. 32 samples are cast for both soft shadows and ambient occlusion and each pixel uses 4 samples for supersampling.
 
