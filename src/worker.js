@@ -311,6 +311,8 @@ function trace(ray, depth = 4) {
 
     return color;
   }
+
+  return constants.BACKGROUND_COLOR;
 }
 
 /**
@@ -324,7 +326,6 @@ function trace(ray, depth = 4) {
 function render(x0, y0, x1, y1) {
   let bucket = {};
   const rays = createScreenRays(x0, y0, x1, y1, settings.supersampling);
-  const backgroundColor = new Vector(175, 175, 175);
 
   for (let y = y0; y < y1; y++) {
     for (let x = x0; x < x1; x++) {
