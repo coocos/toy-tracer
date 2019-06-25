@@ -39,7 +39,8 @@ describe("Sphere", () => {
         color: color.toArray(),
         glossiness: 0,
         reflectivity: 0,
-        transparency: 0
+        transparency: 0,
+        checkered: false
       }
     });
   });

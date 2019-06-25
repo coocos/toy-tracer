@@ -14,12 +14,32 @@ export class Material {
     color = constants.WHITE,
     glossiness = 0,
     reflectivity = 0,
-    transparency = 0
+    transparency = 0,
+    checkered = false
   ) {
     this.color = color;
     this.glossiness = glossiness;
     this.reflectivity = reflectivity;
     this.transparency = transparency;
+    this.checkered = checkered;
+  }
+
+  /**
+   * Returns material color at given point. This is useful mostly
+   * for texturing purposes.
+   *
+   * @param {Vector} point - point to tell color for
+   * @return {Vector} color
+   */
+  colorAt(point) {
+    if (this.checkered) {
+      const x = Math.floor(point.x * 2);
+      const z = Math.floor(point.z * 2);
+      if ((x % 2 && z % 2 == 0) || (z % 2 && x % 2 == 0)) {
+        return this.color.scale(0.5);
+      }
+    }
+    return this.color;
   }
 
   /**
@@ -32,7 +52,8 @@ export class Material {
       color: this.color.toArray(),
       glossiness: this.glossiness,
       reflectivity: this.reflectivity,
-      transparency: this.transparency
+      transparency: this.transparency,
+      checkered: this.checkered
     };
   }
 
@@ -41,12 +62,19 @@ export class Material {
    *
    * @param {Object} material - material object
    */
-  static deserialize({ color, glossiness, reflectivity, transparency }) {
+  static deserialize({
+    color,
+    glossiness,
+    reflectivity,
+    transparency,
+    checkered
+  }) {
     return new Material(
       new Vector(...color),
       glossiness,
       reflectivity,
-      transparency
+      transparency,
+      checkered
     );
   }
 }
@@ -157,13 +185,11 @@ export class Plane {
    * @param {Vector} position - a point on the plane
    * @param {Vector} normal - surface normal
    * @param {Object} material - material object
-   * @param {Boolean checkered - whether the plane is checkered or not
    */
-  constructor(position, normal, material = new Material(), checkered = false) {
+  constructor(position, normal, material = new Material()) {
     this.position = position;
     this.surfaceNormal = normal;
     this.material = material;
-    this.checkered = checkered;
   }
 
   /**
@@ -182,15 +208,13 @@ export class Plane {
    * @param {Array} position - a point on the plane
    * @param {Array} normal - surface normal
    * @param {Object} material - material object
-   * @param {Boolean checkered - whether the plane is checkered or not
    * @return {Plane} plane
    */
-  static deserialize(position, normal, material, checkered) {
+  static deserialize(position, normal, material) {
     return new Plane(
       new Vector(...position),
       new Vector(...normal),
-      Material.deserialize(material),
-      checkered
+      Material.deserialize(material)
     );
   }
 
@@ -204,7 +228,6 @@ export class Plane {
       type: "Plane",
       position: this.position.toArray(),
       normal: this.surfaceNormal.toArray(),
-      checkered: this.checkered,
       material: material.serialize()
     };
   }

@@ -183,17 +183,7 @@ function shade({ point, normal, primitive }, ray) {
   // Calculate Lambertian reflectance / diffuse
   const toLight = scene.light.position.subtract(point).normalize();
   const lambertian = Math.max(0, normal.dot(toLight));
-
-  let color = primitive.material.color.scale(lambertian);
-
-  // Horizontal checkered textures for planes
-  if (primitive.checkered) {
-    const x = Math.floor(point.x * 2);
-    const z = Math.floor(point.z * 2);
-    if ((x % 2 && z % 2 == 0) || (z % 2 && x % 2 == 0)) {
-      color = color.scale(0.5);
-    }
-  }
+  let color = primitive.material.colorAt(point).scale(lambertian);
 
   // Calculate specular reflection using Blinn-Phong
   if (primitive.material.glossiness > 0) {

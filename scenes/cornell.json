@@ -96,9 +96,9 @@
                     255,
                     255,
                     255
-                ]
-            },
-            "checkered": true
+                ],
+                "checkered": true
+            }
         },
         {
             "type": "Plane",
