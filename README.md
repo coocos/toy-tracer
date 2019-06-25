@@ -8,7 +8,7 @@ A simple [Cornell'ish box](https://en.wikipedia.org/wiki/Cornell_box) with an ar
 
 Notice the soft shadows cast by the spheres, ambient occlusion outlining the corners of box, the mirror-like reflections of the large sphere and the refractive sphere at the front. 32 samples are cast for both soft shadows and ambient occlusion and each pixel uses 4 samples for supersampling.
 
-Reflective spheres with a refractive sphere in the middle with sharp shadows:
+A refractive sphere displaying the spheres behind it:
 
 ![toy-tracer](docs/spheres.png)
 
@@ -46,7 +46,3 @@ npm run test
 ## Why JavaScript? Why not GLSL?
 
 Yes, I know computing on the GPU is the way to go for ray tracing as it's an [embarrassingly parallel](https://en.wikipedia.org/wiki/Embarrassingly_parallel) problem. However I wanted to write something relatively simple with JavaScript and WebWorkers and a ray tracer sounded like a good fit. Nevertheless if you do want to write a highly performing ray tracer which runs in the browser you should take a look at [Shader Toy](https://www.shadertoy.com/) and use WebGL / GLSL.
-
-## License
-
-MIT

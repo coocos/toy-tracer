@@ -2,14 +2,16 @@
     "camera": [
         0,
         0,
-        2.5
+        2
     ],
     "light": {
         "position": [
             0,
-            5,
+            3.5,
             2.5
         ],
+        "type": "area",
+        "size": 0.5,
         "normal": [
             0,
             -1,
@@ -21,7 +23,7 @@
             "type": "Plane",
             "point": [
                 0,
-                -1.5,
+                -0.5,
                 -6
             ],
             "normal": [
@@ -34,18 +36,38 @@
                     255,
                     255,
                     255
+                ],
+                "checkered": true
+            }
+        },
+        {
+            "type": "Plane",
+            "point": [
+                0,
+                -0.5,
+                -6
+            ],
+            "normal": [
+                0,
+                0,
+                1
+            ],
+            "material": {
+                "color": [
+                    125,
+                    125,
+                    125
                 ]
-            },
-            "checkered": true
+            }
         },
         {
             "type": "Sphere",
             "position": [
                 -1,
-                -0.8,
+                 0,
                 -3
             ],
-            "radius": 0.6,
+            "radius": 0.5,
             "material": {
                 "color": [
                     255,
@@ -93,6 +115,22 @@
         {
             "type": "Sphere",
             "position": [
+                0.35,
+                -0.4,
+                0.75
+            ],
+            "radius": 0.1,
+            "material": {
+                "color": [
+                    125,
+                    255,
+                    255
+                ]
+            }
+        },
+        {
+            "type": "Sphere",
+            "position": [
                 0.5,
                 0.5,
                 -3
@@ -111,10 +149,10 @@
             "type": "Sphere",
             "position": [
                 0.6,
-                -0.5,
+                -0.1,
                 -2.75
             ],
-            "radius": 0.45,
+            "radius": 0.4,
             "material": {
                 "color": [
                     255,
@@ -148,15 +186,14 @@
                 1.25,
                 -3.5
             ],
-            "radius": 0.75,
+            "radius": 0.5,
             "material": {
                 "color": [
-                    255,
                     75,
+                    225,
                     255
                 ],
-                "glossiness": 128,
-                "reflectivity": 0.9
+                "glossiness": 128
             }
         },
         {
