@@ -12,16 +12,16 @@
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "core-js": "^2.6.5"
+    "core-js": "^2.6.10"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/register": "^7.4.4",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
     "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "parcel-bundler": "1.12.3"
+    "mocha": "^6.2.2",
+    "parcel-bundler": "^1.12.4"
   }
 }
